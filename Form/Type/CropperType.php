@@ -4,6 +4,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 class CropperType extends AbstractType
 {
@@ -19,15 +21,25 @@ class CropperType extends AbstractType
             ->add('path', HiddenType::class, ['attr' => ['data-id' => 'path']])
             ->add('name', HiddenType::class, ['attr' => ['data-id' => 'name']])
             ->add('mime_type', HiddenType::class, ['attr' => ['data-id' => 'mime_type']])
-            ->add('size', HiddenType::class, ['attr' => ['data-id' => 'size']]);
-        if (false) {
-            $builder->add('image_delete', CheckboxType::class, ['mapped' => false, 'label' => 'Supprimer l\'image', 'attr' => ['data-id' => 'image_delete']]);
+            ->add('size', HiddenType::class, ['attr' => ['data-id' => 'size']])
+            ->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
+        if ($builder->getData()) {
+            $builder->add('delete', CheckboxType::class, ['mapped' => false, 'required' => false, 'label' => 'Supprimer l\'image']);
+        }
+    }
+    public function onPreSubmit(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (!$data) {
+            return;
+        }
+        if ($data['delete']) {
         }
     }
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => $this->dataClass
+            'data_class' => $this->dataClass,
         ));
     }
     public function getBlockPrefix()
