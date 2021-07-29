@@ -24,13 +24,13 @@ class CropperType extends AbstractType
             ->add('size', HiddenType::class, ['attr' => ['data-id' => 'size']])
             ->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
         if ($builder->getData()) {
-            $builder->add('delete', CheckboxType::class, ['mapped' => false, 'required' => false, 'label' => 'Supprimer l\'image']);
+            $builder->add('delete', CheckboxType::class, ['mapped' => false, 'required' => false, 'label' => 'deleteImage', 'translation_domain' => 'BreithbarbotCropperBundle']);
         }
     }
     public function onPreSubmit(FormEvent $event)
     {
         $data = $event->getData();
-        if (!$data) {
+        if (!$data || !isset($data['delete'])) {
             return;
         }
         if ($data['delete']) {
