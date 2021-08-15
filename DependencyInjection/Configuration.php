@@ -17,6 +17,14 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('data_class')->isRequired()->cannotBeEmpty()->end()
                     ->end()
                 ->end()
+                ->arrayNode('mappings')
+                    ->useAttributeAsKey('id')
+                    ->prototype('array')
+                        ->children()
+                            ->scalarNode('path')->defaultValue('files/')->end()
+                        ->end()
+                    ->end()
+                ->end()
             ->end()
         ->end();
         return $treeBuilder;
