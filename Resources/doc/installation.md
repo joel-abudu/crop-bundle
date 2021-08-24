@@ -57,6 +57,10 @@ breithbarbot_cropper:
     config:
         default_folder: 'uploads'
         data_class: 'YourBundle\Entity\File'
+    mappings:
+        name_entity_custom:
+            path: files/test/
+        # ...
 ```
 Option `data_class` refers to your Entity `File` with at least the following fields:
 * full_path
