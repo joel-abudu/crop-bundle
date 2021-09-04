@@ -86,5 +86,6 @@ php bin/console cache:clear
 php bin/console cache:clear --env=prod --no-debug
 ```
 <br>
-#### Back to index
+#### Next ?
+[Go to usage Instructions](usage.md)
 [Back to documentation index](index.md)
