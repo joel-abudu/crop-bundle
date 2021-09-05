@@ -47,7 +47,9 @@ class Crop
                 foreach ($each_folder as $item) {
                     if (!empty($item)) {
                         $pathname .= $item."/";
-                        mkdir($pathname);
+                        if (!is_dir($pathname)) {
+                            mkdir($pathname);
+                        }
                     }
                 }
             }
