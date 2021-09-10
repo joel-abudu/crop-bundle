@@ -144,7 +144,7 @@ Crop.prototype = {
             this.$img.cropper({
                 aspectRatio: this.$aspectRatio,
                 wheelZoomRatio: 0.03,
-                autoCropArea: 1,
+                cropBoxResizable: false,
                 preview: this.$avatarPreview.selector,
                 crop: function (e) {
                     var json = [
