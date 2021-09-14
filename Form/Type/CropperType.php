@@ -10,7 +10,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class CropperType extends AbstractType
 {
     private $dataClass;
-    function __construct($dataClass)
+    public function __construct($dataClass)
     {
         $this->dataClass = $dataClass;
     }
