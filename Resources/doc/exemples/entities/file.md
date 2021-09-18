@@ -68,10 +68,10 @@ class File
     public function callbackMethod(array $info)
     {
         // Rewrite variables
-        $info['fileWithoutExt'] = str_replace($info['fileExtension'], '', realPath($info['fileWithoutExt'].$info['fileExtension']));
-        $info['filePath'] = realPath($info['filePath']);
-        $realPath = str_replace(realpath($_SERVER['DOCUMENT_ROOT']), '', $info['filePath']);
-        $this->setPath(str_replace('\\', '/', $realPath));
+        $info['fileWithoutExt'] = str_replace($info['fileExtension'], '', realpath($info['fileWithoutExt'].$info['fileExtension']));
+        $info['filePath'] = realpath($info['filePath']);
+        $realpath = str_replace(realpath($_SERVER['DOCUMENT_ROOT']), '', $info['filePath']);
+        $this->setPath(str_replace('\\', '/', $realpath));
         $this->setFullPath($info['filePath']);
     }
     /**
