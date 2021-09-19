@@ -224,10 +224,14 @@ class Crop
     {
         $request = new Request();
         $dirname = (strlen(dirname($_SERVER['SCRIPT_NAME'])) > 1) ? dirname($_SERVER['SCRIPT_NAME']) : "";
+        $path = $this->infoFile['path'];
+        if ($this->infoFile['path'][0] === '/') {
+            $path = substr($this->infoFile['path'], 1);
+        }
         return [
             'path_image'   => $request->getBaseUrl().$dirname.$this->infoFile['path'],
             'full_path'    => !empty($this->data) ? $this->dst : $this->src,
-            'path'         => $this->infoFile['path'],
+            'path'         => $path,
             'name'         => $this->infoFile['name'],
             'nameOriginal' => $this->infoFile['nameOriginal'],
             'mime_type'    => $this->infoFile['mime_type'],
