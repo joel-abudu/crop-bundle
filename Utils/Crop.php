@@ -223,7 +223,7 @@ class Crop
     public function getResult()
     {
         $request = new Request();
-        $dirname = (strlen(dirname($_SERVER['SCRIPT_NAME'])) > 1) ? dirname($_SERVER['SCRIPT_NAME']) : "";
+        $dirname = (strlen(dirname($_SERVER['SCRIPT_NAME'])) > 1) ? dirname($_SERVER['SCRIPT_NAME']) : '';
         $path = $this->infoFile['path'];
         if ($this->infoFile['path'][0] === '/') {
             $path = substr($this->infoFile['path'], 1);
