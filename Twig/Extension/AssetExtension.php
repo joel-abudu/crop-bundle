@@ -1,7 +1,7 @@
 <?php
 namespace Breithbarbot\CropperBundle\Twig\Extension;
 use Symfony\Component\Asset\Packages;
-class CropperExtension extends \Twig_Extension
+class AssetExtension extends \Twig_Extension
 {
     private $packages;
     public function __construct(Packages $packages)
