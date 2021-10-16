@@ -29,7 +29,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
 {
     $builder
         // [...]
-        ->add('your_field_name', CropperType::class, ['data' => $builder->getData()->getYourFieldName(), 'required' => false]) 
+        ->add('your_field_name', CropperType::class, ['data' => $builder->getData()->getYourFieldName(), 'required' => false, 'mapping' => 'name_custom_entity']) 
         // [...]
     ;
 }
@@ -38,13 +38,12 @@ public function buildForm(FormBuilderInterface $builder, array $options)
 ### Step 3: Add modal
 Include modal with params
 ```twig
-{% include 'BreithbarbotCropperBundle:Form:cropper_modal.html.twig' with {'mapping': 'name_custom_entity', 'width': '400', 'height': '225', 'ratio': '16/9'} %}
+{% include 'BreithbarbotCropperBundle:Form:cropper_modal.html.twig' with {'mapping': 'name_custom_entity', 'id': 'crop1'} %}
 ```
-Parameter :
+Parameters :
 * mapping : name_custom_entity
-* width   : Width of cropped image
-* height  : Height of cropped image
-* ratio   : Ratio of cropped image
+* [optional] id : 'crop1'
+    * If you have multiple cropping on the same page, it would be good to differentiate them
 <br>
 ### Step 4: Add form field
 ```twig

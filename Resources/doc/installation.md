@@ -53,7 +53,15 @@ breithbarbot_cropper:
         data_class: 'YourBundle\Entity\File'
     mappings:
         name_custom_entity:
-            path: files/news/
+            path: 'files/news/'
+            width:  400
+            height: 225
+            ratio:  '16/9'
+        name_custom_entity_2:
+            path: 'files/various/'
+            width:  200
+            height: 200
+            ratio:  '1'
         # ...
 ```
 Option `data_class` refers to your Entity `File` with at least the following fields:
@@ -62,6 +70,10 @@ Option `data_class` refers to your Entity `File` with at least the following fie
 * name
 * mime_type
 [More info for exemple `File entity`](exemples/entities/file.md)
+Option : `width`, `height` and `ratio` are optional.
+* [optional] width   : Width of cropped image
+* [optional] height  : Height of cropped image
+* [optional] ratio   : Ratio of cropped image
 <br>
 ### Step 4: Import BreithbarbotCropperBundle routing files
 Import the routing:
