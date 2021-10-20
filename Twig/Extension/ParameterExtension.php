@@ -2,7 +2,11 @@
 namespace Breithbarbot\CropperBundle\Twig\Extension;
 class ParameterExtension extends \Twig_Extension
 {
-    public $container;
+    private $container;
+    public function __construct($container)
+    {
+        $this->container = $container;
+    }
     public function getFunctions()
     {
         return [
