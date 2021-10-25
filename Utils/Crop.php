@@ -1,5 +1,6 @@
 <?php
 namespace Breithbarbot\CropperBundle\Utils;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 class Crop
 {
@@ -48,7 +49,9 @@ class Crop
                     if (!empty($item)) {
                         $pathname .= $item.'/';
                         if (!is_dir($pathname)) {
-                            mkdir($pathname);
+                            if (!@mkdir($pathname) && !is_dir($pathname)) {
+                                throw new Exception('Folder not created');
+                            }
                         }
                     }
                 }
@@ -124,7 +127,7 @@ class Crop
             $src_img_w = $size_w;
             $src_img_h = $size_h;
             $degrees = $data->rotate;
-            if (is_numeric($degrees) && $degrees != 0) {
+            if (is_numeric($degrees) && $degrees !== 0) {
                 $new_img = imagerotate($src_img, -$degrees, imagecolorallocatealpha($src_img, 0, 0, 0, 127));
                 imagedestroy($src_img);
                 $src_img = $new_img;
