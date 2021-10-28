@@ -82,7 +82,7 @@ class File
     public function setPreupdate(PreUpdateEventArgs $args)
     {
         if ($args->hasChangedField('fullPath')) {
-            if ($args->getOldValue('mimeType') !== $args->getNewValue('mimeType')) {
+            if ($args->getOldValue('fullPath') !== $args->getNewValue('fullPath')) {
                 $this->removeFiles($args->getOldValue('fullPath'), true);
             }
         }
