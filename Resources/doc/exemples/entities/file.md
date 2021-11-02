@@ -135,7 +135,8 @@ class File
     {
         return $this->file;
     }
-    // Getter, setter and more custom... 
+    // Getter, setter and more custom...
+    // For getName() function : `return pathinfo($this->name, PATHINFO_FILENAME);`
     // [...]
 }
 ```
