@@ -1,6 +1,5 @@
 <?php
 namespace Breithbarbot\CropperBundle\Utils;
-use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 class Crop
 {
@@ -39,7 +38,7 @@ class Crop
     private function setFile($file, $filename, $path, $folder, $default_folder)
     {
         $errorCode = $file->getError();
-        if ($errorCode === UPLOAD_ERR_OK) {
+        if (UPLOAD_ERR_OK === $errorCode) {
             $type = exif_imagetype($file->getRealPath());
             if (!@mkdir('uploads/'.$folder, 0755, true) && !is_dir('uploads/'.$folder)) {
                 die('Failed to create folders...');
@@ -48,7 +47,7 @@ class Crop
                 if ($type) {
                     $extension = image_type_to_extension($type);
                     $src = $path.$filename.'.original'.$extension;
-                    if ($type === IMAGETYPE_GIF || $type === IMAGETYPE_JPEG || $type === IMAGETYPE_PNG) {
+                    if (IMAGETYPE_GIF === $type || IMAGETYPE_JPEG === $type || IMAGETYPE_PNG === $type) {
                         if (file_exists($src)) {
                             unlink($src);
                         }
@@ -82,11 +81,11 @@ class Crop
     private function setInfoFile($file, $filename, $folder, $default_folder, $extension)
     {
         $this->infoFile = [
-            'path'         => '/'.$default_folder.'/'.$folder.$filename.$extension,
-            'name'         => $filename.$extension,
+            'path' => '/'.$default_folder.'/'.$folder.$filename.$extension,
+            'name' => $filename.$extension,
             'nameOriginal' => $filename.'.original'.$extension,
-            'mime_type'    => $file->getMimeType(),
-            'size'         => $file->getSize(),
+            'mime_type' => $file->getMimeType(),
+            'size' => $file->getSize(),
         ];
     }
     private function crop($src, $dst, $data, $size_data)
@@ -115,7 +114,7 @@ class Crop
             $src_img_w = $size_w;
             $src_img_h = $size_h;
             $degrees = $data->rotate;
-            if (is_numeric($degrees) && $degrees !== 0) {
+            if (is_numeric($degrees) && 0 !== $degrees) {
                 $new_img = imagerotate($src_img, -$degrees, imagecolorallocatealpha($src_img, 0, 0, 0, 127));
                 imagedestroy($src_img);
                 $src_img = $new_img;
@@ -197,15 +196,15 @@ class Crop
     }
     private function codeToMessage($code)
     {
-        $errors = array(
-            UPLOAD_ERR_INI_SIZE   => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
-            UPLOAD_ERR_FORM_SIZE  => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form',
-            UPLOAD_ERR_PARTIAL    => 'The uploaded file was only partially uploaded',
-            UPLOAD_ERR_NO_FILE    => 'No file was uploaded',
+        $errors = [
+            UPLOAD_ERR_INI_SIZE => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
+            UPLOAD_ERR_FORM_SIZE => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form',
+            UPLOAD_ERR_PARTIAL => 'The uploaded file was only partially uploaded',
+            UPLOAD_ERR_NO_FILE => 'No file was uploaded',
             UPLOAD_ERR_NO_TMP_DIR => 'Missing a temporary folder',
             UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk',
-            UPLOAD_ERR_EXTENSION  => 'File upload stopped by extension',
-        );
+            UPLOAD_ERR_EXTENSION => 'File upload stopped by extension',
+        ];
         if (array_key_exists($code, $errors)) {
             return $errors[$code];
         }
@@ -214,19 +213,19 @@ class Crop
     public function getResult()
     {
         $request = new Request();
-        $dirname = (strlen(dirname($_SERVER['SCRIPT_NAME'])) > 1) ? dirname($_SERVER['SCRIPT_NAME']) : '';
+        $dirname = (mb_strlen(\dirname($_SERVER['SCRIPT_NAME'])) > 1) ? \dirname($_SERVER['SCRIPT_NAME']) : '';
         $path = $this->infoFile['path'];
         if ($this->infoFile['path'][0] === '/') {
-            $path = substr($this->infoFile['path'], 1);
+            $path = mb_substr($this->infoFile['path'], 1);
         }
         return [
-            'path_image'   => $request->getBaseUrl().$dirname.$this->infoFile['path'],
-            'full_path'    => !empty($this->data) ? $this->dst : $this->src,
-            'path'         => $path,
-            'name'         => $this->infoFile['name'],
+            'path_image' => $request->getBaseUrl().$dirname.$this->infoFile['path'],
+            'full_path' => !empty($this->data) ? $this->dst : $this->src,
+            'path' => $path,
+            'name' => $this->infoFile['name'],
             'nameOriginal' => $this->infoFile['nameOriginal'],
-            'mime_type'    => $this->infoFile['mime_type'],
-            'size'         => $this->infoFile['size'],
+            'mime_type' => $this->infoFile['mime_type'],
+            'size' => $this->infoFile['size'],
         ];
     }
     public function getMsg()

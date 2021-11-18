@@ -40,15 +40,13 @@ class CropperType extends AbstractType
         if (!$data || !isset($data['delete'])) {
             return;
         }
-        if ($data['delete']) {
-        }
     }
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => $this->dataClass,
-            'mapping'    => null,
-        ));
+            'mapping' => null,
+        ]);
     }
     public function getBlockPrefix()
     {

@@ -10,7 +10,7 @@ class CropperController extends Controller
     {
         if (!array_key_exists($request->request->get('mapping'), $this->getParameter('breithbarbot_cropper.mappings'))) {
             return new JsonResponse([
-                'state'   => 200,
+                'state' => 200,
                 'message' => '<b>'.$request->request->get('mapping').'</b> is unrecognized!',
             ]);
         }
@@ -23,7 +23,7 @@ class CropperController extends Controller
         $path = $mapping['path'];
         $width = $mapping['width'];
         $height = $mapping['height'];
-        $base_path = dirname($_SERVER['SCRIPT_FILENAME']).'/'.$default_folder.'/';
+        $base_path = \dirname($_SERVER['SCRIPT_FILENAME']).'/'.$default_folder.'/';
         $crop = new Crop(
             $avatar_src ?? null,
             $avatar_data ?? null,
@@ -35,9 +35,9 @@ class CropperController extends Controller
             $default_folder
         );
         return new JsonResponse([
-            'state'   => 200,
+            'state' => 200,
             'message' => $crop->getMsg(),
-            'result'  => $crop->getResult(),
+            'result' => $crop->getResult(),
         ]);
     }
 }
