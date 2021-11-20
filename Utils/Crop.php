@@ -210,7 +210,7 @@ class Crop
         }
         return 'Unknown upload error';
     }
-    public function getResult()
+    public function getResult(): array
     {
         $request = new Request();
         $dirname = (mb_strlen(\dirname($_SERVER['SCRIPT_NAME'])) > 1) ? \dirname($_SERVER['SCRIPT_NAME']) : '';
