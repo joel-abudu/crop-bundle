@@ -13,16 +13,16 @@ matrix:
     - php: 7.0
     - php: 7.1
     - php: 7.2
-    - php: nightly
-  allow_failures:
-    - php: nightly
 before_install:
-  - '[[ "$TRAVIS_PHP_VERSION" == "nightly" ]] || phpenv config-rm xdebug.ini'
   - composer self-update
 install:
   - composer install
   - ./vendor/bin/simple-phpunit install
 script:
   - ./vendor/bin/simple-phpunit
-  - '[[ "$TRAVIS_PHP_VERSION" == "nightly" ]] || ./vendor/bin/php-cs-fixer fix --diff --dry-run -v'
+  - ./vendor/bin/php-cs-fixer fix --diff --dry-run -v
   - composer validate --strict
+notifications:
+  email:
+    on_success: never
+    on_failure: always

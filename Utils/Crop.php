@@ -10,11 +10,11 @@ class Crop
     private $extension;
     private $msg;
     private $infoFile;
-    public function __construct($src, $data, $file, $filename, $path, $folder, $size, $default_folder)
+    public function __construct($src, $data, $file, $filename, $path, $folder, $size, $defaultFolder)
     {
         $this->setSrc($src, $filename, $path);
         $this->setData($data);
-        $this->setFile($file, $filename, $path, $folder, $default_folder);
+        $this->setFile($file, $filename, $path, $folder, $defaultFolder);
         $this->crop($this->src, $this->dst, $this->data, $size);
     }
     private function setSrc($src, $filename, $path)
@@ -35,7 +35,7 @@ class Crop
             $this->data = json_decode(stripslashes($data));
         }
     }
-    private function setFile($file, $filename, $path, $folder, $default_folder)
+    private function setFile($file, $filename, $path, $folder, $defaultFolder)
     {
         $errorCode = $file->getError();
         if (UPLOAD_ERR_OK === $errorCode) {
@@ -51,7 +51,7 @@ class Crop
                         if (file_exists($src)) {
                             unlink($src);
                         }
-                        $this->setInfoFile($file, $filename, $folder, $default_folder, $extension);
+                        $this->setInfoFile($file, $filename, $folder, $defaultFolder, $extension);
                         $result = move_uploaded_file($file->getRealPath(), $src);
                         if ($result) {
                             $this->src = $src;
@@ -78,10 +78,10 @@ class Crop
     {
         $this->dst = $path.$filename.$this->extension;
     }
-    private function setInfoFile($file, $filename, $folder, $default_folder, $extension)
+    private function setInfoFile($file, $filename, $folder, $defaultFolder, $extension)
     {
         $this->infoFile = [
-            'path' => '/'.$default_folder.'/'.$folder.$filename.$extension,
+            'path' => '/'.$defaultFolder.'/'.$folder.$filename.$extension,
             'name' => $filename.$extension,
             'nameOriginal' => $filename.'.original'.$extension,
             'mime_type' => $file->getMimeType(),
@@ -93,13 +93,13 @@ class Crop
         if (!empty($src) && !empty($dst) && !empty($data)) {
             switch ($this->type) {
                 case IMAGETYPE_GIF:
-                    $src_img = imagecreatefromgif($src);
+                    $src_img = @imagecreatefromgif($src);
                     break;
                 case IMAGETYPE_JPEG:
-                    $src_img = imagecreatefromjpeg($src);
+                    $src_img = @imagecreatefromjpeg($src);
                     break;
                 case IMAGETYPE_PNG:
-                    $src_img = imagecreatefrompng($src);
+                    $src_img = @imagecreatefrompng($src);
                     break;
                 default:
                     $src_img = null;
@@ -165,7 +165,7 @@ class Crop
             $dst_y /= $ratio;
             $dst_w /= $ratio;
             $dst_h /= $ratio;
-            $dst_img = imagecreatetruecolor($dst_img_w, $dst_img_h);
+            $dst_img = @imagecreatetruecolor($dst_img_w, $dst_img_h);
             imagefill($dst_img, 0, 0, imagecolorallocatealpha($dst_img, 0, 0, 0, 127));
             imagesavealpha($dst_img, true);
             $result = imagecopyresampled($dst_img, $src_img, $dst_x, $dst_y, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h);

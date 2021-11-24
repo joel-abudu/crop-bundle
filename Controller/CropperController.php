@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 class CropperController extends Controller
 {
-    public function cropAction(Request $request)
+    public function cropAction(Request $request): JsonResponse
     {
         if (!array_key_exists($request->request->get('mapping'), $this->getParameter('breithbarbot_cropper.mappings'))) {
             return new JsonResponse([
@@ -14,25 +14,25 @@ class CropperController extends Controller
                 'message' => '<b>'.$request->request->get('mapping').'</b> is unrecognized!',
             ]);
         }
-        $default_folder = !empty($this->getParameter('breithbarbot_cropper.default_folder')) ? $this->getParameter('breithbarbot_cropper.default_folder') : 'uploads';
-        $avatar_src = $request->request->get('avatar_src');
-        $avatar_data = $request->request->get('avatar_data');
-        $avatar_file = $request->files->get('avatar_file');
+        $defaultFolder = !empty($this->getParameter('breithbarbot_cropper.default_folder')) ? $this->getParameter('breithbarbot_cropper.default_folder') : 'uploads';
+        $basePath = \dirname($_SERVER['SCRIPT_FILENAME']).'/'.$defaultFolder.'/';
+        $avatarSrc = $request->request->get('avatar_src');
+        $avatarData = $request->request->get('avatar_data');
+        $avatarFile = $request->files->get('avatar_file');
         $filename = $request->request->get('filename');
         $mapping = $this->getParameter('breithbarbot_cropper.mappings')[$request->request->get('mapping')];
         $path = $mapping['path'];
         $width = $mapping['width'];
         $height = $mapping['height'];
-        $base_path = \dirname($_SERVER['SCRIPT_FILENAME']).'/'.$default_folder.'/';
         $crop = new Crop(
-            $avatar_src ?? null,
-            $avatar_data ?? null,
-            $avatar_file ?? null,
+            $avatarSrc ?? null,
+            $avatarData ?? null,
+            $avatarFile ?? null,
             !empty($filename) ? $filename : sha1(uniqid(time(), true)),
-            !empty($path) ? $base_path.$path : $base_path.'files/',
+            !empty($path) ? $basePath.$path : $basePath.'files/',
             !empty($path) ? $path : 'files/',
             ['width' => $width, 'height' => $height],
-            $default_folder
+            $defaultFolder
         );
         return new JsonResponse([
             'state' => 200,

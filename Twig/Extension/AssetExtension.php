@@ -8,13 +8,13 @@ class AssetExtension extends \Twig_Extension
     {
         $this->packages = $packages;
     }
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new \Twig_SimpleFunction('breithbarbot_cropper_asset', [$this, 'getPath']),
         ];
     }
-    public function getPath($entity)
+    public function getPath($entity): string
     {
         if (!empty($entity)) {
             return $this->packages->getUrl($entity->getPath());
