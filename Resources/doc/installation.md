@@ -12,8 +12,8 @@ Require the bundle with composer:
 composer require breithbarbot/cropper
 ```
 <br>
-### Step 2: Enable the bundle
-Enable the bundle in the kernel :
+### Step 2: Enable the bundles
+Enable the bundles in the kernel :
 ```php
 // app/AppKernel.php
 public function registerBundles()
