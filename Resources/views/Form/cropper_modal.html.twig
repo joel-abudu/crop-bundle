@@ -54,7 +54,7 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">{{ 'modal.close'|trans }}</button>
                         <button type="submit" class="btn btn-primary">{{ 'modal.save'|trans }}</button>
-                        {% if current_mapping.routes.remove_path is defined %}
+                        {% if current_mapping.routes.delete_path is defined %}
                             <button type="button" class="avatar-remove btn btn-danger">Supprimer</button>
                         {% endif %}
                     </div>
@@ -180,7 +180,7 @@
                     });
                 }
             });
-            {% if current_mapping.routes.remove_path is defined %}
+            {% if current_mapping.routes.delete_path is defined %}
             document.querySelector('.avatar-remove').addEventListener('click', function (e) {
                 e.preventDefault();
                 if (confirm('Delete image?')) {
@@ -188,7 +188,7 @@
                         data    : $(this).serialize(),
                         dataType: "json",
                         method  : "POST",
-                        url     : "{{ path(current_mapping.routes.remove_path) }}"
+                        url     : "{{ path(current_mapping.routes.delete_path) }}"
                     }).done(function (data, textStatus, jqXHR) {
                         if (data.return) {
                         } else {
