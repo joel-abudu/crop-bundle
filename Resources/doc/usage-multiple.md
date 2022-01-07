@@ -15,20 +15,25 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         // [...]
-        $builder->add('avatar', CropperType::class, ['required' => false, 'mapping' => 'user_avatar', 'additional_data' => ['user_id' => 12345], 'identifier' => 'crop3', 'label' => false]);
+        $builder->add('avatar', CropperType::class, ['required' => false, 'mapping' => 'user_avatar', 'additional_data' => ['user_id' => 12345, 'foo' => 'bar'], 'identifier' => 'crop3', 'label' => false]);
         // [...]
     }
 }
 ```
+Parameters :
+* mapping : `'user_avatar'`
+* additional_data (optional) : `['user_id' => 12345, 'foo' => 'bar']`
+* identifier : `'crop3'`
+* label (optional) : `false`
 <br>
 ### Step 2: Add modal
 Include modal with params:
 ```twig
-{% include 'BreithbarbotCropperBundle:Form:cropper_modal.html.twig' with {'mapping': 'user_avatar', 'id': crop3} %}
+{% include 'BreithbarbotCropperBundle:Form:cropper_modal.html.twig' with {'mapping': 'user_avatar', 'id': 'crop3'} %}
 ```
 Parameters :
-* mapping : user_avatar
-* id : 'crop3'
+* mapping : `'user_avatar'`
+* id : `'crop3'`
 <br>
 #### Back to index
 [Back to documentation index](index.md)
