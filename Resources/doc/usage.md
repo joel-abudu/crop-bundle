@@ -43,8 +43,8 @@ Parameters :
 ```
 <br>
 ### Step 4: Logic from controller
-Exemple script from controller:
-=> [UserController.php](exemples/Controller/UserController.php)
+Example script from controller:
+=> [CropperController.php](exemples/Controller/CropperController.php)
 <br>
 #### Back to index
 [Back to documentation index](index.md)
