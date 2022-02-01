@@ -52,6 +52,9 @@
                         </div>
                     </div>
                     <div class="modal-footer">
+                        {{ 'deleteImage'|trans }}
+                        {{ 'deleteImage'|trans|raw }}
+                        {{ 'deleteImage'|trans|e}}
                         <button type="button" class="btn btn-default" data-dismiss="modal">{{ 'modal.close'|trans }}</button>
                         {% if current_mapping.routes.path_delete is defined %}
                             <button type="button" class="avatar-remove btn btn-danger">Supprimer</button>
@@ -181,7 +184,7 @@
                 document.querySelector('.avatar-remove').addEventListener('click', function (e) {
                     e.preventDefault();
                     var avatar = document.querySelector('.avatar-view > img');
-                    if (confirm('{{ 'deleteImage'|trans }}')) {
+                    if (confirm('{{ 'deleteImage'|trans|e('js') }}')) {
                         $.ajax({
                             data    : $('#avatar-modal{{ identifier }} form').serialize(),
                             dataType: "json",
