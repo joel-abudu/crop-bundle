@@ -42,9 +42,10 @@ Example configure the bundle:
 # config/packages/breithbarbot_cropper.yaml
 breithbarbot_cropper:
     mappings:
+        # An example of a custom mapping name
         user_avatar:
             routes:
-                # Your personalized route which will take care of the recording of the image
+                # A custom route which will take care of saving the image
                 path_add:    'app_cropper_avatar_add'
                 # Your custom route that will delete the image + Show the delete button in the modal. (Optional parameter)
                 path_delete: 'app_cropper_avatar_delete'
@@ -60,6 +61,7 @@ breithbarbot_cropper:
             height: 225
             ratio:  '16/9'
 ```
+[Here is an example of use for the following 2 routes](examples/Controller/CropperController.php): `app_cropper_avatar_add` and `app_cropper_avatar_delete`.
 <br>
 ### Step 4: Install the assets
 Used to install multimedia files in the `public/bundles/` folder:
