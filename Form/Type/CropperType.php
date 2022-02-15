@@ -24,6 +24,7 @@ class CropperType extends AbstractType
         if (!empty($options['identifier'])) {
             $builder->add('_identifier', HiddenType::class, ['mapped' => false, 'data' => $options['identifier']]);
         }
+        $builder->add('id', HiddenType::class, ['mapped' => false, 'attr' => ['data-cropper-image-id' => '']]);
     }
     public function configureOptions(OptionsResolver $resolver)
     {
