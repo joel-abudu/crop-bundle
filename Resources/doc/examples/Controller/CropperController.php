@@ -11,78 +11,69 @@ class CropperController extends Controller
         $status = 400;
         $return = false;
         $additionalData = [];
+        $path = '/public/uploads/user/avatar';
+        $nameEntity = 'Avatar';
         if (!$request->isXmlHttpRequest()) {
             $message = 'This is not an ajax request.';
         } else {
             $em = $this->getDoctrine()->getManager();
-            $userId = (int) $request->request->get('user_id');
-            $user = $em->find(User::class, $userId);
-            if (!\is_object($user)) {
-                $message = 'User does not exist!';
-            } else {
-                $avatarInput = $request->files->get('avatar_input');
-                if (null !== $avatarInput) {
-                    $name = md5(uniqid($userId, true)).'.'.$avatarInput->guessClientExtension();
-                    $resultUpload = $avatarInput->move('/public/uploads/user/avatar', $name);
-                    if (!empty($resultUpload)) {
-                        $entity = 'Avatar';
-                        try {
-                            $file = new File();
-                            $file->setFullPath($resultUpload->getPathname());
-                            $file->setPath(str_replace('\\', '/', str_replace($this->getParameter('kernel.project_dir').'/public', '', $resultUpload->getPathname())));
-                            $file->setTitle($avatarInput->getClientOriginalName());
-                            $em->persist($file);
-                            $additionalData = ['file' => ['id' => $file->getId()]];
-                            $user->setAvatar($file);
-                            $em->persist($user);
-                            $em->flush();
-                            $status = 200;
-                            $message = $entity.' updated.';
-                            $return = true;
-                        } catch (\Exception $e) {
-                            $message = 'An error occurred when updating the '.mb_strtolower($entity).'...';
-                        }
-                    } else {
-                        $message = 'Error during file upload...';
+            $avatarInput = $request->files->get('avatar_input');
+            if (null !== $avatarInput) {
+                $name = md5(uniqid(12345, true)).'.'.$avatarInput->guessClientExtension();
+                $resultUpload = $avatarInput->move($path, $name);
+                if (!empty($resultUpload)) {
+                    try {
+                        $file = new File();
+                        $file->setPath(str_replace('\\', '/', str_replace($this->getParameter('kernel.project_dir').'/public', '', $resultUpload->getPathname())));
+                        $file->setName($name);
+                        $em->persist($file);
+                        $em->flush();
+                        $additionalData['file'] = ['id' => $file->getId()];
+                        $status = 200;
+                        $message = $nameEntity.' saved.';
+                        $return = true;
+                    } catch (\Exception $e) {
+                        $message = 'An error occurred when updating the '.mb_strtolower($nameEntity).'...';
                     }
                 } else {
-                    $message = 'File does not exist!';
+                    $message = 'Error during file upload...';
                 }
+            } else {
+                $message = 'File does not exist!';
             }
         }
-        return new JsonResponse(['return' => $return, 'message' => $message, $additionalData], $status);
+        return new JsonResponse(['return' => $return, 'message' => $message, 'additional_data' => $additionalData], $status);
     }
     public function avatarDelete(Request $request): JsonResponse
     {
         $status = 400;
         $return = false;
         $additionalData = [];
+        $entityId = (int) $request->request->get('entity_id');
+        $class = User::class;
+        $nameEntity = 'Avatar';
         if (!$request->isXmlHttpRequest()) {
             $message = 'This is not an ajax request.';
         } else {
             $em = $this->getDoctrine()->getManager();
-            $userId = (int) $request->request->get('user_id');
-            $user = $em->find(User::class, $userId);
-            if (!\is_object($user)) {
-                $message = 'User does not exist!';
-            } elseif (null === $user->getAvatar()) {
-                $message = 'User does not exist!';
+            $entity = $em->find($class, $entityId);
+            if (!\is_object($entity) && (null === $entity->getAvatar())) {
+                $message = 'Entity does not exist!';
             } else {
-                $entity = 'Avatar';
                 try {
-                    $getFullPath = $user->getAvatar()->getFullPath();
-                    $em->remove($user->getAvatar());
+                    $getFullPath = $entity->getAvatar()->getFullPath();
+                    $em->remove($entity->getAvatar());
                     if (is_file($getFullPath)) {
                         unset($getFullPath);
                     }
-                    $user->setAvatar(null);
-                    $em->persist($user);
+                    $entity->setAvatar(null);
+                    $em->persist($entity);
                     $em->flush();
                     $message = 'Image deleted!';
                     $status = 200;
                     $return = true;
                 } catch (\Exception $e) {
-                    $message = 'An error occurred when delete the '.mb_strtolower($entity).'...';
+                    $message = 'An error occurred when delete the '.mb_strtolower($nameEntity).'...';
                 }
             }
         }
