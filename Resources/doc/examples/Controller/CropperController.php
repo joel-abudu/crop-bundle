@@ -17,10 +17,10 @@ class CropperController extends Controller
             $message = 'This is not an ajax request.';
         } else {
             $em = $this->getDoctrine()->getManager();
-            $avatarInput = $request->files->get('avatar_input');
-            if (null !== $avatarInput) {
-                $name = md5(uniqid(12345, true)).'.'.$avatarInput->guessClientExtension();
-                $resultUpload = $avatarInput->move($path, $name);
+            $imageInput = $request->files->get('avatar_input');
+            if (null !== $imageInput) {
+                $name = md5(uniqid(12345, true)).'.'.$imageInput->guessClientExtension();
+                $resultUpload = $imageInput->move($path, $name);
                 if (!empty($resultUpload)) {
                     try {
                         $file = new File();
@@ -49,7 +49,7 @@ class CropperController extends Controller
         $status = 400;
         $return = false;
         $additionalData = [];
-        $entityId = (int) $request->request->get('entity_id');
+        $entityId = $request->request->get('entity_id');
         $class = User::class;
         $nameEntity = 'Avatar';
         if (!$request->isXmlHttpRequest()) {
