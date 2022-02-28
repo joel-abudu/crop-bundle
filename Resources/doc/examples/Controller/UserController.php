@@ -1,10 +1,10 @@
 <?php
 namespace App\Controller;
-use App\Entity\File;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-class UserController extends Controller
+class UserController extends AbstractController
 {
     public function edit(Request $request): Response
     {
