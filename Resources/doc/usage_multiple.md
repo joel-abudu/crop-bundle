@@ -26,7 +26,8 @@ class UserType extends AbstractType
             ],
             'identifier' => 'crop3',
             'label' => false
-            ]);
+            ])
+        ;
         // [...]
     }
 }
@@ -37,7 +38,7 @@ class UserType extends AbstractType
 ### Step 2: Add modal
 Include modal with params:
 ```twig
-{% include 'BreithbarbotCropperBundle:Form:cropper_modal.html.twig' with {'mapping': 'user_avatar', 'id': 'crop3'} %}
+{% include '@BreithbarbotCropper/Form/cropper_modal.html.twig' with {'mapping': 'user_avatar', 'id': 'crop3'} %}
 ```
 - Parameter :
     - identifier : `'crop3'`

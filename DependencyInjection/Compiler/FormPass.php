@@ -6,7 +6,7 @@ class FormPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        $template = 'BreithbarbotCropperBundle:Form:fields.html.twig';
+        $template = '@BreithbarbotCropper/Form/fields.html.twig';
         $resources = $container->getParameter('twig.form.resources');
         if (!\in_array($template, $resources, true)) {
             if (false !== ($key = array_search('fields.html.twig', $resources, true))) {
