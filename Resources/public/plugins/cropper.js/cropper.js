@@ -3,9 +3,55 @@
   typeof define === 'function' && define.amd ? define(factory) :
   (global.Cropper = factory());
 }(this, (function () { 'use strict';
+  function _typeof(obj) {
+    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+      _typeof = function (obj) {
+        return typeof obj;
+      };
+    } else {
+      _typeof = function (obj) {
+        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+      };
+    }
+    return _typeof(obj);
+  }
+  function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  }
+  function _defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }
+  function _createClass(Constructor, protoProps, staticProps) {
+    if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) _defineProperties(Constructor, staticProps);
+    return Constructor;
+  }
+  function _toConsumableArray(arr) {
+    return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
+  }
+  function _arrayWithoutHoles(arr) {
+    if (Array.isArray(arr)) {
+      for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+      return arr2;
+    }
+  }
+  function _iterableToArray(iter) {
+    if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
+  }
+  function _nonIterableSpread() {
+    throw new TypeError("Invalid attempt to spread non-iterable instance");
+  }
   var IN_BROWSER = typeof window !== 'undefined';
   var WINDOW = IN_BROWSER ? window : {};
-  var NAMESPACE = 'cropper';
+  var NAMESPACE = 'cropper'; 
   var ACTION_ALL = 'all';
   var ACTION_CROP = 'crop';
   var ACTION_MOVE = 'move';
@@ -17,19 +63,19 @@
   var ACTION_NORTH_EAST = 'ne';
   var ACTION_NORTH_WEST = 'nw';
   var ACTION_SOUTH_EAST = 'se';
-  var ACTION_SOUTH_WEST = 'sw';
-  var CLASS_CROP = NAMESPACE + '-crop';
-  var CLASS_DISABLED = NAMESPACE + '-disabled';
-  var CLASS_HIDDEN = NAMESPACE + '-hidden';
-  var CLASS_HIDE = NAMESPACE + '-hide';
-  var CLASS_INVISIBLE = NAMESPACE + '-invisible';
-  var CLASS_MODAL = NAMESPACE + '-modal';
-  var CLASS_MOVE = NAMESPACE + '-move';
-  var DATA_ACTION = NAMESPACE + 'Action';
-  var DATA_PREVIEW = NAMESPACE + 'Preview';
+  var ACTION_SOUTH_WEST = 'sw'; 
+  var CLASS_CROP = "".concat(NAMESPACE, "-crop");
+  var CLASS_DISABLED = "".concat(NAMESPACE, "-disabled");
+  var CLASS_HIDDEN = "".concat(NAMESPACE, "-hidden");
+  var CLASS_HIDE = "".concat(NAMESPACE, "-hide");
+  var CLASS_INVISIBLE = "".concat(NAMESPACE, "-invisible");
+  var CLASS_MODAL = "".concat(NAMESPACE, "-modal");
+  var CLASS_MOVE = "".concat(NAMESPACE, "-move"); 
+  var DATA_ACTION = "".concat(NAMESPACE, "Action");
+  var DATA_PREVIEW = "".concat(NAMESPACE, "Preview"); 
   var DRAG_MODE_CROP = 'crop';
   var DRAG_MODE_MOVE = 'move';
-  var DRAG_MODE_NONE = 'none';
+  var DRAG_MODE_NONE = 'none'; 
   var EVENT_CROP = 'crop';
   var EVENT_CROP_END = 'cropend';
   var EVENT_CROP_MOVE = 'cropmove';
@@ -41,14 +87,15 @@
   var EVENT_READY = 'ready';
   var EVENT_RESIZE = 'resize';
   var EVENT_WHEEL = 'wheel mousewheel DOMMouseScroll';
-  var EVENT_ZOOM = 'zoom';
+  var EVENT_ZOOM = 'zoom'; 
+  var MIME_TYPE_JPEG = 'image/jpeg'; 
   var REGEXP_ACTIONS = /^(?:e|w|s|n|se|sw|ne|nw|all|crop|move|zoom)$/;
   var REGEXP_DATA_URL = /^data:/;
   var REGEXP_DATA_URL_JPEG = /^data:image\/jpeg;base64,/;
   var REGEXP_TAG_NAME = /^(?:img|canvas)$/i;
   var DEFAULTS = {
-    viewMode: 0, 
-    dragMode: DRAG_MODE_CROP, 
+    viewMode: 0,
+    dragMode: DRAG_MODE_CROP,
     initialAspectRatio: NaN,
     aspectRatio: NaN,
     data: null,
@@ -88,40 +135,6 @@
     zoom: null
   };
   var TEMPLATE = '<div class="cropper-container" touch-action="none">' + '<div class="cropper-wrap-box">' + '<div class="cropper-canvas"></div>' + '</div>' + '<div class="cropper-drag-box"></div>' + '<div class="cropper-crop-box">' + '<span class="cropper-view-box"></span>' + '<span class="cropper-dashed dashed-h"></span>' + '<span class="cropper-dashed dashed-v"></span>' + '<span class="cropper-center"></span>' + '<span class="cropper-face"></span>' + '<span class="cropper-line line-e" data-cropper-action="e"></span>' + '<span class="cropper-line line-n" data-cropper-action="n"></span>' + '<span class="cropper-line line-w" data-cropper-action="w"></span>' + '<span class="cropper-line line-s" data-cropper-action="s"></span>' + '<span class="cropper-point point-e" data-cropper-action="e"></span>' + '<span class="cropper-point point-n" data-cropper-action="n"></span>' + '<span class="cropper-point point-w" data-cropper-action="w"></span>' + '<span class="cropper-point point-s" data-cropper-action="s"></span>' + '<span class="cropper-point point-ne" data-cropper-action="ne"></span>' + '<span class="cropper-point point-nw" data-cropper-action="nw"></span>' + '<span class="cropper-point point-sw" data-cropper-action="sw"></span>' + '<span class="cropper-point point-se" data-cropper-action="se"></span>' + '</div>' + '</div>';
-  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-    return typeof obj;
-  } : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-  };
-  var classCallCheck = function (instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  };
-  var createClass = function () {
-    function defineProperties(target, props) {
-      for (var i = 0; i < props.length; i++) {
-        var descriptor = props[i];
-        descriptor.enumerable = descriptor.enumerable || false;
-        descriptor.configurable = true;
-        if ("value" in descriptor) descriptor.writable = true;
-        Object.defineProperty(target, descriptor.key, descriptor);
-      }
-    }
-    return function (Constructor, protoProps, staticProps) {
-      if (protoProps) defineProperties(Constructor.prototype, protoProps);
-      if (staticProps) defineProperties(Constructor, staticProps);
-      return Constructor;
-    };
-  }();
-  var toConsumableArray = function (arr) {
-    if (Array.isArray(arr)) {
-      for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
-      return arr2;
-    } else {
-      return Array.from(arr);
-    }
-  };
   var isNaN = Number.isNaN || WINDOW.isNaN;
   function isNumber(value) {
     return typeof value === 'number' && !isNaN(value);
@@ -130,7 +143,7 @@
     return typeof value === 'undefined';
   }
   function isObject(value) {
-    return (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object' && value !== null;
+    return _typeof(value) === 'object' && value !== null;
   }
   var hasOwnProperty = Object.prototype.hasOwnProperty;
   function isPlainObject(value) {
@@ -150,9 +163,10 @@
   }
   function forEach(data, callback) {
     if (data && isFunction(callback)) {
-      if (Array.isArray(data) || isNumber(data.length) ) {
+      if (Array.isArray(data) || isNumber(data.length)
+      ) {
           var length = data.length;
-          var i = void 0;
+          var i;
           for (i = 0; i < length; i += 1) {
             if (callback.call(data, data[i], i, data) === false) {
               break;
@@ -167,7 +181,7 @@
     return data;
   }
   var assign = Object.assign || function assign(obj) {
-    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
       args[_key - 1] = arguments[_key];
     }
     if (isObject(obj) && args.length > 0) {
@@ -181,7 +195,7 @@
     }
     return obj;
   };
-  var REGEXP_DECIMALS = /\.\d*(?:0|9){12}\d*$/i;
+  var REGEXP_DECIMALS = /\.\d*(?:0|9){12}\d*$/;
   function normalizeDecimalNumber(value) {
     var times = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 100000000000;
     return REGEXP_DECIMALS.test(value) ? Math.round(value * times) / times : value;
@@ -217,7 +231,7 @@
     if (!className) {
       element.className = value;
     } else if (className.indexOf(value) < 0) {
-      element.className = className + ' ' + value;
+      element.className = "".concat(className, " ").concat(value);
     }
   }
   function removeClass(element, value) {
@@ -247,7 +261,7 @@
         toggleClass(elem, value, added);
       });
       return;
-    }
+    } 
     if (added) {
       addClass(element, value);
     } else {
@@ -265,7 +279,7 @@
     if (element.dataset) {
       return element.dataset[name];
     }
-    return element.getAttribute('data-' + hyphenate(name));
+    return element.getAttribute("data-".concat(hyphenate(name)));
   }
   function setData(element, name, data) {
     if (isObject(data)) {
@@ -273,7 +287,7 @@
     } else if (element.dataset) {
       element.dataset[name] = data;
     } else {
-      element.setAttribute('data-' + hyphenate(name), data);
+      element.setAttribute("data-".concat(hyphenate(name)), data);
     }
   }
   function removeData(element, name) {
@@ -290,7 +304,7 @@
         element.dataset[name] = undefined;
       }
     } else {
-      element.removeAttribute('data-' + hyphenate(name));
+      element.removeAttribute("data-".concat(hyphenate(name)));
     }
   }
   var REGEXP_SPACES = /\s\s*/;
@@ -300,11 +314,11 @@
       var once = false;
       var listener = function listener() {};
       var options = Object.defineProperty({}, 'once', {
-        get: function get$$1() {
+        get: function get() {
           supported = true;
           return once;
         },
-        set: function set$$1(value) {
+        set: function set(value) {
           once = value;
         }
       });
@@ -339,13 +353,13 @@
     type.trim().split(REGEXP_SPACES).forEach(function (event) {
       if (options.once && !onceSupported) {
         var _element$listeners = element.listeners,
-            listeners = _element$listeners === undefined ? {} : _element$listeners;
+            listeners = _element$listeners === void 0 ? {} : _element$listeners;
         _handler = function handler() {
-          for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-            args[_key2] = arguments[_key2];
-          }
           delete listeners[event][listener];
           element.removeEventListener(event, _handler, options);
+          for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+            args[_key2] = arguments[_key2];
+          }
           listener.apply(element, args);
         };
         if (!listeners[event]) {
@@ -361,7 +375,7 @@
     });
   }
   function dispatchEvent(element, type, data) {
-    var event = void 0;
+    var event; 
     if (isFunction(Event) && isFunction(CustomEvent)) {
       event = new CustomEvent(type, {
         detail: data,
@@ -388,7 +402,7 @@
     return parts && (parts[1] !== location.protocol || parts[2] !== location.hostname || parts[3] !== location.port);
   }
   function addTimestamp(url) {
-    var timestamp = 'timestamp=' + new Date().getTime();
+    var timestamp = "timestamp=".concat(new Date().getTime());
     return url + (url.indexOf('?') === -1 ? '?' : '&') + timestamp;
   }
   function getTransforms(_ref) {
@@ -399,19 +413,19 @@
         translateY = _ref.translateY;
     var values = [];
     if (isNumber(translateX) && translateX !== 0) {
-      values.push('translateX(' + translateX + 'px)');
+      values.push("translateX(".concat(translateX, "px)"));
     }
     if (isNumber(translateY) && translateY !== 0) {
-      values.push('translateY(' + translateY + 'px)');
-    }
+      values.push("translateY(".concat(translateY, "px)"));
+    } 
     if (isNumber(rotate) && rotate !== 0) {
-      values.push('rotate(' + rotate + 'deg)');
+      values.push("rotate(".concat(rotate, "deg)"));
     }
     if (isNumber(scaleX) && scaleX !== 1) {
-      values.push('scaleX(' + scaleX + ')');
+      values.push("scaleX(".concat(scaleX, ")"));
     }
     if (isNumber(scaleY) && scaleY !== 1) {
-      values.push('scaleY(' + scaleY + ')');
+      values.push("scaleY(".concat(scaleY, ")"));
     }
     var transform = values.length ? values.join(' ') : 'none';
     return {
@@ -527,28 +541,28 @@
         imageNaturalWidth = _ref6.naturalWidth,
         imageNaturalHeight = _ref6.naturalHeight,
         _ref6$rotate = _ref6.rotate,
-        rotate = _ref6$rotate === undefined ? 0 : _ref6$rotate,
+        rotate = _ref6$rotate === void 0 ? 0 : _ref6$rotate,
         _ref6$scaleX = _ref6.scaleX,
-        scaleX = _ref6$scaleX === undefined ? 1 : _ref6$scaleX,
+        scaleX = _ref6$scaleX === void 0 ? 1 : _ref6$scaleX,
         _ref6$scaleY = _ref6.scaleY,
-        scaleY = _ref6$scaleY === undefined ? 1 : _ref6$scaleY;
+        scaleY = _ref6$scaleY === void 0 ? 1 : _ref6$scaleY;
     var aspectRatio = _ref7.aspectRatio,
         naturalWidth = _ref7.naturalWidth,
         naturalHeight = _ref7.naturalHeight;
     var _ref8$fillColor = _ref8.fillColor,
-        fillColor = _ref8$fillColor === undefined ? 'transparent' : _ref8$fillColor,
+        fillColor = _ref8$fillColor === void 0 ? 'transparent' : _ref8$fillColor,
         _ref8$imageSmoothingE = _ref8.imageSmoothingEnabled,
-        imageSmoothingEnabled = _ref8$imageSmoothingE === undefined ? true : _ref8$imageSmoothingE,
+        imageSmoothingEnabled = _ref8$imageSmoothingE === void 0 ? true : _ref8$imageSmoothingE,
         _ref8$imageSmoothingQ = _ref8.imageSmoothingQuality,
-        imageSmoothingQuality = _ref8$imageSmoothingQ === undefined ? 'low' : _ref8$imageSmoothingQ,
+        imageSmoothingQuality = _ref8$imageSmoothingQ === void 0 ? 'low' : _ref8$imageSmoothingQ,
         _ref8$maxWidth = _ref8.maxWidth,
-        maxWidth = _ref8$maxWidth === undefined ? Infinity : _ref8$maxWidth,
+        maxWidth = _ref8$maxWidth === void 0 ? Infinity : _ref8$maxWidth,
         _ref8$maxHeight = _ref8.maxHeight,
-        maxHeight = _ref8$maxHeight === undefined ? Infinity : _ref8$maxHeight,
+        maxHeight = _ref8$maxHeight === void 0 ? Infinity : _ref8$maxHeight,
         _ref8$minWidth = _ref8.minWidth,
-        minWidth = _ref8$minWidth === undefined ? 0 : _ref8$minWidth,
+        minWidth = _ref8$minWidth === void 0 ? 0 : _ref8$minWidth,
         _ref8$minHeight = _ref8.minHeight,
-        minHeight = _ref8$minHeight === undefined ? 0 : _ref8$minHeight;
+        minHeight = _ref8$minHeight === void 0 ? 0 : _ref8$minHeight;
     var canvas = document.createElement('canvas');
     var context = canvas.getContext('2d');
     var maxSizes = getAdjustedSizes({
@@ -562,7 +576,7 @@
       height: minHeight
     }, 'cover');
     var width = Math.min(maxSizes.width, Math.max(minSizes.width, naturalWidth));
-    var height = Math.min(maxSizes.height, Math.max(minSizes.height, naturalHeight));
+    var height = Math.min(maxSizes.height, Math.max(minSizes.height, naturalHeight)); 
     var destMaxSizes = getAdjustedSizes({
       aspectRatio: imageAspectRatio,
       width: maxWidth,
@@ -586,7 +600,7 @@
     context.scale(scaleX, scaleY);
     context.imageSmoothingEnabled = imageSmoothingEnabled;
     context.imageSmoothingQuality = imageSmoothingQuality;
-    context.drawImage.apply(context, [image].concat(toConsumableArray(params.map(function (param) {
+    context.drawImage.apply(context, [image].concat(_toConsumableArray(params.map(function (param) {
       return Math.floor(normalizeDecimalNumber(param));
     }))));
     context.restore();
@@ -595,7 +609,7 @@
   var fromCharCode = String.fromCharCode;
   function getStringFromCharCode(dataView, start, length) {
     var str = '';
-    var i = void 0;
+    var i;
     length += start;
     for (i = start; i < length; i += 1) {
       str += fromCharCode(dataView.getUint8(i));
@@ -614,65 +628,67 @@
     return arrayBuffer;
   }
   function arrayBufferToDataURL(arrayBuffer, mimeType) {
+    var chunks = [];
+    var chunkSize = 8192;
     var uint8 = new Uint8Array(arrayBuffer);
-    var data = '';
-    if (isFunction(uint8.forEach)) {
-      uint8.forEach(function (value) {
-        data += fromCharCode(value);
-      });
-    } else {
-      forEach(uint8, function (value) {
-        data += fromCharCode(value);
-      });
+    while (uint8.length > 0) {
+      chunks.push(fromCharCode.apply(void 0, _toConsumableArray(uint8.subarray(0, chunkSize))));
+      uint8 = uint8.subarray(chunkSize);
     }
-    return 'data:' + mimeType + ';base64,' + btoa(data);
+    return "data:".concat(mimeType, ";base64,").concat(btoa(chunks.join('')));
   }
-  function getOrientation(arrayBuffer) {
+  function resetAndGetOrientation(arrayBuffer) {
     var dataView = new DataView(arrayBuffer);
-    var orientation = void 0;
-    var littleEndian = void 0;
-    var app1Start = void 0;
-    var ifdStart = void 0;
-    if (dataView.getUint8(0) === 0xFF && dataView.getUint8(1) === 0xD8) {
-      var length = dataView.byteLength;
-      var offset = 2;
-      while (offset < length) {
-        if (dataView.getUint8(offset) === 0xFF && dataView.getUint8(offset + 1) === 0xE1) {
-          app1Start = offset;
-          break;
-        }
-        offset += 1;
-      }
-    }
-    if (app1Start) {
-      var exifIDCode = app1Start + 4;
-      var tiffOffset = app1Start + 10;
-      if (getStringFromCharCode(dataView, exifIDCode, 4) === 'Exif') {
-        var endianness = dataView.getUint16(tiffOffset);
-        littleEndian = endianness === 0x4949;
-        if (littleEndian || endianness === 0x4D4D ) {
-            if (dataView.getUint16(tiffOffset + 2, littleEndian) === 0x002A) {
-              var firstIFDOffset = dataView.getUint32(tiffOffset + 4, littleEndian);
-              if (firstIFDOffset >= 0x00000008) {
-                ifdStart = tiffOffset + firstIFDOffset;
-              }
-            }
-          }
-      }
-    }
-    if (ifdStart) {
-      var _length = dataView.getUint16(ifdStart, littleEndian);
-      var _offset = void 0;
-      var i = void 0;
-      for (i = 0; i < _length; i += 1) {
-        _offset = ifdStart + i * 12 + 2;
-        if (dataView.getUint16(_offset, littleEndian) === 0x0112 ) {
-            _offset += 8;
-            orientation = dataView.getUint16(_offset, littleEndian);
-            dataView.setUint16(_offset, 1, littleEndian);
+    var orientation; 
+    try {
+      var littleEndian;
+      var app1Start;
+      var ifdStart; 
+      if (dataView.getUint8(0) === 0xFF && dataView.getUint8(1) === 0xD8) {
+        var length = dataView.byteLength;
+        var offset = 2;
+        while (offset + 1 < length) {
+          if (dataView.getUint8(offset) === 0xFF && dataView.getUint8(offset + 1) === 0xE1) {
+            app1Start = offset;
             break;
           }
+          offset += 1;
+        }
       }
+      if (app1Start) {
+        var exifIDCode = app1Start + 4;
+        var tiffOffset = app1Start + 10;
+        if (getStringFromCharCode(dataView, exifIDCode, 4) === 'Exif') {
+          var endianness = dataView.getUint16(tiffOffset);
+          littleEndian = endianness === 0x4949;
+          if (littleEndian || endianness === 0x4D4D
+          ) {
+              if (dataView.getUint16(tiffOffset + 2, littleEndian) === 0x002A) {
+                var firstIFDOffset = dataView.getUint32(tiffOffset + 4, littleEndian);
+                if (firstIFDOffset >= 0x00000008) {
+                  ifdStart = tiffOffset + firstIFDOffset;
+                }
+              }
+            }
+        }
+      }
+      if (ifdStart) {
+        var _length = dataView.getUint16(ifdStart, littleEndian);
+        var _offset;
+        var i;
+        for (i = 0; i < _length; i += 1) {
+          _offset = ifdStart + i * 12 + 2;
+          if (dataView.getUint16(_offset, littleEndian) === 0x0112
+          ) {
+              _offset += 8; 
+              orientation = dataView.getUint16(_offset, littleEndian); 
+              dataView.setUint16(_offset, 1, littleEndian);
+              break;
+            }
+        }
+      }
+    } catch (e) {
+      orientation = 1;
     }
     return orientation;
   }
@@ -945,9 +961,9 @@
         }
       }
       this.cropBoxData = cropBoxData;
-      this.limitCropBox(true, true);
+      this.limitCropBox(true, true); 
       cropBoxData.width = Math.min(Math.max(cropBoxData.width, cropBoxData.minWidth), cropBoxData.maxWidth);
-      cropBoxData.height = Math.min(Math.max(cropBoxData.height, cropBoxData.minHeight), cropBoxData.maxHeight);
+      cropBoxData.height = Math.min(Math.max(cropBoxData.height, cropBoxData.minHeight), cropBoxData.maxHeight); 
       cropBoxData.width = Math.max(cropBoxData.minWidth, cropBoxData.width * autoCropArea);
       cropBoxData.height = Math.max(cropBoxData.minHeight, cropBoxData.height * autoCropArea);
       cropBoxData.left = canvasData.left + (canvasData.width - cropBoxData.width) / 2;
@@ -967,7 +983,7 @@
         var minCropBoxWidth = Number(options.minCropBoxWidth) || 0;
         var minCropBoxHeight = Number(options.minCropBoxHeight) || 0;
         var maxCropBoxWidth = limited ? Math.min(containerData.width, canvasData.width, canvasData.width + canvasData.left, containerData.width - canvasData.left) : containerData.width;
-        var maxCropBoxHeight = limited ? Math.min(containerData.height, canvasData.height, canvasData.height + canvasData.top, containerData.height - canvasData.top) : containerData.height;
+        var maxCropBoxHeight = limited ? Math.min(containerData.height, canvasData.height, canvasData.height + canvasData.top, containerData.height - canvasData.top) : containerData.height; 
         minCropBoxWidth = Math.min(minCropBoxWidth, containerData.width);
         minCropBoxHeight = Math.min(minCropBoxHeight, containerData.height);
         if (aspectRatio) {
@@ -987,7 +1003,7 @@
           } else {
             maxCropBoxWidth = maxCropBoxHeight * aspectRatio;
           }
-        }
+        } 
         cropBoxData.minWidth = Math.min(minCropBoxWidth, maxCropBoxWidth);
         cropBoxData.minHeight = Math.min(minCropBoxHeight, maxCropBoxHeight);
         cropBoxData.maxWidth = maxCropBoxWidth;
@@ -1069,7 +1085,7 @@
       }
       this.previews = previews;
       forEach(previews, function (el) {
-        var img = document.createElement('img');
+        var img = document.createElement('img'); 
         setData(el, DATA_PREVIEW, {
           width: el.offsetWidth,
           height: el.offsetHeight,
@@ -1221,10 +1237,10 @@
       if (this.disabled || containerData.width <= minContainerWidth || containerData.height <= minContainerHeight) {
         return;
       }
-      var ratio = container.offsetWidth / containerData.width;
+      var ratio = container.offsetWidth / containerData.width; 
       if (ratio !== 1 || container.offsetHeight !== containerData.height) {
-        var canvasData = void 0;
-        var cropBoxData = void 0;
+        var canvasData;
+        var cropBoxData;
         if (options.restore) {
           canvasData = this.getCanvasData();
           cropBoxData = this.getCropBoxData();
@@ -1253,7 +1269,7 @@
       if (this.disabled) {
         return;
       }
-      e.preventDefault();
+      e.preventDefault(); 
       if (this.wheeling) {
         return;
       }
@@ -1276,7 +1292,7 @@
       }
       var options = this.options,
           pointers = this.pointers;
-      var action = void 0;
+      var action;
       if (e.changedTouches) {
         forEach(e.changedTouches, function (touch) {
           pointers[touch.identifier] = getPointer(touch);
@@ -1297,7 +1313,7 @@
         action: action
       }) === false) {
         return;
-      }
+      } 
       e.preventDefault();
       this.action = action;
       this.cropping = false;
@@ -1321,10 +1337,10 @@
       }
       if (e.changedTouches) {
         forEach(e.changedTouches, function (touch) {
-          assign(pointers[touch.identifier], getPointer(touch, true));
+          assign(pointers[touch.identifier] || {}, getPointer(touch, true));
         });
       } else {
-        assign(pointers[e.pointerId || 0], getPointer(e, true));
+        assign(pointers[e.pointerId || 0] || {}, getPointer(e, true));
       }
       this.change(e);
     },
@@ -1378,7 +1394,7 @@
       var maxWidth = containerData.width;
       var maxHeight = containerData.height;
       var renderable = true;
-      var offset = void 0;
+      var offset; 
       if (!aspectRatio && e.shiftKey) {
         aspectRatio = width && height ? width / height : 1;
       }
@@ -1711,7 +1727,7 @@
           }
           if (range.y < 0) {
             top -= height;
-          }
+          } 
           if (!this.cropped) {
             removeClass(this.cropBox, CLASS_HIDDEN);
             this.cropped = true;
@@ -1729,7 +1745,7 @@
         cropBoxData.top = top;
         this.action = action;
         this.renderCropBox();
-      }
+      } 
       forEach(pointers, function (p) {
         p.startX = p.endX;
         p.startY = p.endY;
@@ -1771,7 +1787,7 @@
         });
         this.cropped = false;
         this.renderCropBox();
-        this.limitCanvas(true, true);
+        this.limitCanvas(true, true); 
         this.renderCanvas();
         removeClass(this.dragBox, CLASS_MODAL);
         addClass(this.cropBox, CLASS_HIDDEN);
@@ -1820,21 +1836,21 @@
     },
     destroy: function destroy() {
       var element = this.element;
-      if (!getData(element, NAMESPACE)) {
+      if (!element[NAMESPACE]) {
         return this;
       }
+      element[NAMESPACE] = undefined;
       if (this.isImg && this.replaced) {
         element.src = this.originalUrl;
       }
       this.uncreate();
-      removeData(element, NAMESPACE);
       return this;
     },
     move: function move(offsetX) {
       var offsetY = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : offsetX;
-      var _canvasData = this.canvasData,
-          left = _canvasData.left,
-          top = _canvasData.top;
+      var _this$canvasData = this.canvasData,
+          left = _this$canvasData.left,
+          top = _this$canvasData.top;
       return this.moveTo(isUndefined(offsetX) ? offsetX : left + Number(offsetX), isUndefined(offsetY) ? offsetY : top + Number(offsetY));
     },
     moveTo: function moveTo(x) {
@@ -1892,7 +1908,7 @@
           var center = pointers && Object.keys(pointers).length ? getPointersCenter(pointers) : {
             pageX: _originalEvent.pageX,
             pageY: _originalEvent.pageY
-          };
+          }; 
           canvasData.left -= (newWidth - width) * ((center.pageX - offset.left - canvasData.left) / width);
           canvasData.top -= (newHeight - height) * ((center.pageY - offset.top - canvasData.top) / height);
         } else if (isPlainObject(pivot) && isNumber(pivot.x) && isNumber(pivot.y)) {
@@ -1954,7 +1970,7 @@
           imageData = this.imageData,
           canvasData = this.canvasData,
           cropBoxData = this.cropBoxData;
-      var data = void 0;
+      var data;
       if (this.ready && this.cropped) {
         data = {
           x: cropBoxData.left - canvasData.left,
@@ -2073,7 +2089,7 @@
     },
     getCropBoxData: function getCropBoxData() {
       var cropBoxData = this.cropBoxData;
-      var data = void 0;
+      var data;
       if (this.ready && this.cropped) {
         data = {
           left: cropBoxData.left,
@@ -2087,8 +2103,8 @@
     setCropBoxData: function setCropBoxData(data) {
       var cropBoxData = this.cropBoxData;
       var aspectRatio = this.options.aspectRatio;
-      var widthChanged = void 0;
-      var heightChanged = void 0;
+      var widthChanged;
+      var heightChanged;
       if (this.ready && this.cropped && !this.disabled && isPlainObject(data)) {
         if (isNumber(data.left)) {
           cropBoxData.left = data.left;
@@ -2121,15 +2137,15 @@
         return null;
       }
       var canvasData = this.canvasData;
-      var source = getSourceCanvas(this.image, this.imageData, canvasData, options);
+      var source = getSourceCanvas(this.image, this.imageData, canvasData, options); 
       if (!this.cropped) {
         return source;
       }
-      var _getData = this.getData(),
-          initialX = _getData.x,
-          initialY = _getData.y,
-          initialWidth = _getData.width,
-          initialHeight = _getData.height;
+      var _this$getData = this.getData(),
+          initialX = _this$getData.x,
+          initialY = _this$getData.y,
+          initialWidth = _this$getData.width,
+          initialHeight = _this$getData.height;
       var ratio = source.width / Math.floor(canvasData.naturalWidth);
       if (ratio !== 1) {
         initialX *= ratio;
@@ -2164,22 +2180,22 @@
       context.fillStyle = options.fillColor || 'transparent';
       context.fillRect(0, 0, width, height);
       var _options$imageSmoothi = options.imageSmoothingEnabled,
-          imageSmoothingEnabled = _options$imageSmoothi === undefined ? true : _options$imageSmoothi,
+          imageSmoothingEnabled = _options$imageSmoothi === void 0 ? true : _options$imageSmoothi,
           imageSmoothingQuality = options.imageSmoothingQuality;
       context.imageSmoothingEnabled = imageSmoothingEnabled;
       if (imageSmoothingQuality) {
         context.imageSmoothingQuality = imageSmoothingQuality;
-      }
+      } 
       var sourceWidth = source.width;
-      var sourceHeight = source.height;
+      var sourceHeight = source.height; 
       var srcX = initialX;
       var srcY = initialY;
-      var srcWidth = void 0;
-      var srcHeight = void 0;
-      var dstX = void 0;
-      var dstY = void 0;
-      var dstWidth = void 0;
-      var dstHeight = void 0;
+      var srcWidth;
+      var srcHeight; 
+      var dstX;
+      var dstY;
+      var dstWidth;
+      var dstHeight;
       if (srcX <= -initialWidth || srcX > sourceWidth) {
         srcX = 0;
         srcWidth = 0;
@@ -2210,12 +2226,12 @@
         srcHeight = Math.min(initialHeight, sourceHeight - srcY);
         dstHeight = srcHeight;
       }
-      var params = [srcX, srcY, srcWidth, srcHeight];
+      var params = [srcX, srcY, srcWidth, srcHeight]; 
       if (dstWidth > 0 && dstHeight > 0) {
         var scale = width / initialWidth;
         params.push(dstX * scale, dstY * scale, dstWidth * scale, dstHeight * scale);
-      }
-      context.drawImage.apply(context, [source].concat(toConsumableArray(params.map(function (param) {
+      } 
+      context.drawImage.apply(context, [source].concat(_toConsumableArray(params.map(function (param) {
         return Math.floor(normalizeDecimalNumber(param));
       }))));
       return canvas;
@@ -2255,10 +2271,11 @@
     }
   };
   var AnotherCropper = WINDOW.Cropper;
-  var Cropper = function () {
+  var Cropper =
+  function () {
     function Cropper(element) {
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      classCallCheck(this, Cropper);
+      _classCallCheck(this, Cropper);
       if (!element || !REGEXP_TAG_NAME.test(element.tagName)) {
         throw new Error('The first argument is required and must be an <img> or <canvas> element.');
       }
@@ -2274,23 +2291,23 @@
       this.sizing = false;
       this.init();
     }
-    createClass(Cropper, [{
-      key: 'init',
+    _createClass(Cropper, [{
+      key: "init",
       value: function init() {
         var element = this.element;
         var tagName = element.tagName.toLowerCase();
-        var url = void 0;
-        if (getData(element, NAMESPACE)) {
+        var url;
+        if (element[NAMESPACE]) {
           return;
         }
-        setData(element, NAMESPACE, this);
+        element[NAMESPACE] = this;
         if (tagName === 'img') {
-          this.isImg = true;
+          this.isImg = true; 
           url = element.getAttribute('src') || '';
-          this.originalUrl = url;
+          this.originalUrl = url; 
           if (!url) {
             return;
-          }
+          } 
           url = element.src;
         } else if (tagName === 'canvas' && window.HTMLCanvasElement) {
           url = element.toDataURL();
@@ -2298,7 +2315,7 @@
         this.load(url);
       }
     }, {
-      key: 'load',
+      key: "load",
       value: function load(url) {
         var _this = this;
         if (!url) {
@@ -2310,11 +2327,11 @@
             options = this.options;
         if (!options.rotatable && !options.scalable) {
           options.checkOrientation = false;
-        }
+        } 
         if (!options.checkOrientation || !window.ArrayBuffer) {
           this.clone();
           return;
-        }
+        } 
         if (REGEXP_DATA_URL.test(url)) {
           if (REGEXP_DATA_URL_JPEG.test(url)) {
             this.read(dataURLToArrayBuffer(url));
@@ -2324,41 +2341,43 @@
           return;
         }
         var xhr = new XMLHttpRequest();
+        var clone = this.clone.bind(this);
         this.reloading = true;
         this.xhr = xhr;
-        var done = function done() {
-          _this.reloading = false;
-          _this.xhr = null;
-        };
-        xhr.ontimeout = done;
-        xhr.onabort = done;
-        xhr.onerror = function () {
-          done();
-          _this.clone();
+        xhr.ontimeout = clone;
+        xhr.onabort = clone;
+        xhr.onerror = clone;
+        xhr.onprogress = function () {
+          if (xhr.getResponseHeader('content-type') !== MIME_TYPE_JPEG) {
+            xhr.abort();
+          }
         };
         xhr.onload = function () {
-          done();
           _this.read(xhr.response);
         };
+        xhr.onloadend = function () {
+          _this.reloading = false;
+          _this.xhr = null;
+        }; 
         if (options.checkCrossOrigin && isCrossOriginURL(url) && element.crossOrigin) {
           url = addTimestamp(url);
         }
-        xhr.open('get', url);
+        xhr.open('GET', url);
         xhr.responseType = 'arraybuffer';
         xhr.withCredentials = element.crossOrigin === 'use-credentials';
         xhr.send();
       }
     }, {
-      key: 'read',
+      key: "read",
       value: function read(arrayBuffer) {
         var options = this.options,
             imageData = this.imageData;
-        var orientation = getOrientation(arrayBuffer);
+        var orientation = resetAndGetOrientation(arrayBuffer);
         var rotate = 0;
         var scaleX = 1;
         var scaleY = 1;
         if (orientation > 1) {
-          this.url = arrayBufferToDataURL(arrayBuffer, 'image/jpeg');
+          this.url = arrayBufferToDataURL(arrayBuffer, MIME_TYPE_JPEG);
           var _parseOrientation = parseOrientation(orientation);
           rotate = _parseOrientation.rotate;
           scaleX = _parseOrientation.scaleX;
@@ -2374,18 +2393,18 @@
         this.clone();
       }
     }, {
-      key: 'clone',
+      key: "clone",
       value: function clone() {
         var element = this.element,
             url = this.url;
-        var crossOrigin = void 0;
-        var crossOriginUrl = void 0;
+        var crossOrigin;
+        var crossOriginUrl;
         if (this.options.checkCrossOrigin && isCrossOriginURL(url)) {
           crossOrigin = element.crossOrigin;
           if (crossOrigin) {
             crossOriginUrl = url;
           } else {
-            crossOrigin = 'anonymous';
+            crossOrigin = 'anonymous'; 
             crossOriginUrl = addTimestamp(url);
           }
         }
@@ -2403,7 +2422,7 @@
         element.parentNode.insertBefore(image, element.nextSibling);
       }
     }, {
-      key: 'start',
+      key: "start",
       value: function start() {
         var _this2 = this;
         var image = this.isImg ? this.element : this.image;
@@ -2420,7 +2439,7 @@
           _this2.sizing = false;
           _this2.sized = true;
           _this2.build();
-        };
+        }; 
         if (image.naturalWidth && !IS_SAFARI) {
           done(image.naturalWidth, image.naturalHeight);
           return;
@@ -2434,14 +2453,14 @@
             body.removeChild(sizingImage);
           }
         };
-        sizingImage.src = image.src;
+        sizingImage.src = image.src; 
         if (!IS_SAFARI) {
           sizingImage.style.cssText = 'left:0;' + 'max-height:none!important;' + 'max-width:none!important;' + 'min-height:0!important;' + 'min-width:0!important;' + 'opacity:0;' + 'position:absolute;' + 'top:0;' + 'z-index:-1;';
           body.appendChild(sizingImage);
         }
       }
     }, {
-      key: 'stop',
+      key: "stop",
       value: function stop() {
         var image = this.image;
         image.onload = null;
@@ -2450,32 +2469,32 @@
         this.image = null;
       }
     }, {
-      key: 'build',
+      key: "build",
       value: function build() {
         if (!this.sized || this.ready) {
           return;
         }
         var element = this.element,
             options = this.options,
-            image = this.image;
+            image = this.image; 
         var container = element.parentNode;
         var template = document.createElement('div');
         template.innerHTML = TEMPLATE;
-        var cropper = template.querySelector('.' + NAMESPACE + '-container');
-        var canvas = cropper.querySelector('.' + NAMESPACE + '-canvas');
-        var dragBox = cropper.querySelector('.' + NAMESPACE + '-drag-box');
-        var cropBox = cropper.querySelector('.' + NAMESPACE + '-crop-box');
-        var face = cropBox.querySelector('.' + NAMESPACE + '-face');
+        var cropper = template.querySelector(".".concat(NAMESPACE, "-container"));
+        var canvas = cropper.querySelector(".".concat(NAMESPACE, "-canvas"));
+        var dragBox = cropper.querySelector(".".concat(NAMESPACE, "-drag-box"));
+        var cropBox = cropper.querySelector(".".concat(NAMESPACE, "-crop-box"));
+        var face = cropBox.querySelector(".".concat(NAMESPACE, "-face"));
         this.container = container;
         this.cropper = cropper;
         this.canvas = canvas;
         this.dragBox = dragBox;
         this.cropBox = cropBox;
-        this.viewBox = cropper.querySelector('.' + NAMESPACE + '-view-box');
+        this.viewBox = cropper.querySelector(".".concat(NAMESPACE, "-view-box"));
         this.face = face;
-        canvas.appendChild(image);
-        addClass(element, CLASS_HIDDEN);
-        container.insertBefore(cropper, element.nextSibling);
+        canvas.appendChild(image); 
+        addClass(element, CLASS_HIDDEN); 
+        container.insertBefore(cropper, element.nextSibling); 
         if (!this.isImg) {
           removeClass(image, CLASS_HIDE);
         }
@@ -2486,13 +2505,13 @@
         options.viewMode = Math.max(0, Math.min(3, Math.round(options.viewMode))) || 0;
         addClass(cropBox, CLASS_HIDDEN);
         if (!options.guides) {
-          addClass(cropBox.getElementsByClassName(NAMESPACE + '-dashed'), CLASS_HIDDEN);
+          addClass(cropBox.getElementsByClassName("".concat(NAMESPACE, "-dashed")), CLASS_HIDDEN);
         }
         if (!options.center) {
-          addClass(cropBox.getElementsByClassName(NAMESPACE + '-center'), CLASS_HIDDEN);
+          addClass(cropBox.getElementsByClassName("".concat(NAMESPACE, "-center")), CLASS_HIDDEN);
         }
         if (options.background) {
-          addClass(cropper, NAMESPACE + '-bg');
+          addClass(cropper, "".concat(NAMESPACE, "-bg"));
         }
         if (!options.highlight) {
           addClass(face, CLASS_INVISIBLE);
@@ -2502,8 +2521,8 @@
           setData(face, DATA_ACTION, ACTION_ALL);
         }
         if (!options.cropBoxResizable) {
-          addClass(cropBox.getElementsByClassName(NAMESPACE + '-line'), CLASS_HIDDEN);
-          addClass(cropBox.getElementsByClassName(NAMESPACE + '-point'), CLASS_HIDDEN);
+          addClass(cropBox.getElementsByClassName("".concat(NAMESPACE, "-line")), CLASS_HIDDEN);
+          addClass(cropBox.getElementsByClassName("".concat(NAMESPACE, "-point")), CLASS_HIDDEN);
         }
         this.render();
         this.ready = true;
@@ -2520,7 +2539,7 @@
         dispatchEvent(element, EVENT_READY);
       }
     }, {
-      key: 'unbuild',
+      key: "unbuild",
       value: function unbuild() {
         if (!this.ready) {
           return;
@@ -2532,7 +2551,7 @@
         removeClass(this.element, CLASS_HIDDEN);
       }
     }, {
-      key: 'uncreate',
+      key: "uncreate",
       value: function uncreate() {
         if (this.ready) {
           this.unbuild();
@@ -2543,19 +2562,20 @@
           this.sizing = false;
           this.sized = false;
         } else if (this.reloading) {
+          this.xhr.onabort = null;
           this.xhr.abort();
         } else if (this.image) {
           this.stop();
         }
       }
     }], [{
-      key: 'noConflict',
+      key: "noConflict",
       value: function noConflict() {
         window.Cropper = AnotherCropper;
         return Cropper;
       }
     }, {
-      key: 'setDefaults',
+      key: "setDefaults",
       value: function setDefaults(options) {
         assign(DEFAULTS, isPlainObject(options) && options);
       }
