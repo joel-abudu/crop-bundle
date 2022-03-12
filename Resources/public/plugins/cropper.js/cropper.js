@@ -1,8 +1,8 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global.Cropper = factory());
-}(this, (function () { 'use strict';
+  (global = global || self, global.Cropper = factory());
+}(this, function () { 'use strict';
   function _typeof(obj) {
     if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
       _typeof = function (obj) {
@@ -34,6 +34,47 @@
     if (staticProps) _defineProperties(Constructor, staticProps);
     return Constructor;
   }
+  function _defineProperty(obj, key, value) {
+    if (key in obj) {
+      Object.defineProperty(obj, key, {
+        value: value,
+        enumerable: true,
+        configurable: true,
+        writable: true
+      });
+    } else {
+      obj[key] = value;
+    }
+    return obj;
+  }
+  function ownKeys(object, enumerableOnly) {
+    var keys = Object.keys(object);
+    if (Object.getOwnPropertySymbols) {
+      var symbols = Object.getOwnPropertySymbols(object);
+      if (enumerableOnly) symbols = symbols.filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+      });
+      keys.push.apply(keys, symbols);
+    }
+    return keys;
+  }
+  function _objectSpread2(target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i] != null ? arguments[i] : {};
+      if (i % 2) {
+        ownKeys(source, true).forEach(function (key) {
+          _defineProperty(target, key, source[key]);
+        });
+      } else if (Object.getOwnPropertyDescriptors) {
+        Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+      } else {
+        ownKeys(source).forEach(function (key) {
+          Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+        });
+      }
+    }
+    return target;
+  }
   function _toConsumableArray(arr) {
     return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
   }
@@ -49,8 +90,10 @@
   function _nonIterableSpread() {
     throw new TypeError("Invalid attempt to spread non-iterable instance");
   }
-  var IN_BROWSER = typeof window !== 'undefined';
-  var WINDOW = IN_BROWSER ? window : {};
+  var IS_BROWSER = typeof window !== 'undefined' && typeof window.document !== 'undefined';
+  var WINDOW = IS_BROWSER ? window : {};
+  var IS_TOUCH_DEVICE = IS_BROWSER ? 'ontouchstart' in WINDOW.document.documentElement : false;
+  var HAS_POINTER_EVENT = IS_BROWSER ? 'PointerEvent' in WINDOW : false;
   var NAMESPACE = 'cropper'; 
   var ACTION_ALL = 'all';
   var ACTION_CROP = 'crop';
@@ -81,18 +124,23 @@
   var EVENT_CROP_MOVE = 'cropmove';
   var EVENT_CROP_START = 'cropstart';
   var EVENT_DBLCLICK = 'dblclick';
-  var EVENT_POINTER_DOWN = WINDOW.PointerEvent ? 'pointerdown' : 'touchstart mousedown';
-  var EVENT_POINTER_MOVE = WINDOW.PointerEvent ? 'pointermove' : 'touchmove mousemove';
-  var EVENT_POINTER_UP = WINDOW.PointerEvent ? 'pointerup pointercancel' : 'touchend touchcancel mouseup';
+  var EVENT_TOUCH_START = IS_TOUCH_DEVICE ? 'touchstart' : 'mousedown';
+  var EVENT_TOUCH_MOVE = IS_TOUCH_DEVICE ? 'touchmove' : 'mousemove';
+  var EVENT_TOUCH_END = IS_TOUCH_DEVICE ? 'touchend touchcancel' : 'mouseup';
+  var EVENT_POINTER_DOWN = HAS_POINTER_EVENT ? 'pointerdown' : EVENT_TOUCH_START;
+  var EVENT_POINTER_MOVE = HAS_POINTER_EVENT ? 'pointermove' : EVENT_TOUCH_MOVE;
+  var EVENT_POINTER_UP = HAS_POINTER_EVENT ? 'pointerup pointercancel' : EVENT_TOUCH_END;
   var EVENT_READY = 'ready';
   var EVENT_RESIZE = 'resize';
-  var EVENT_WHEEL = 'wheel mousewheel DOMMouseScroll';
+  var EVENT_WHEEL = 'wheel';
   var EVENT_ZOOM = 'zoom'; 
   var MIME_TYPE_JPEG = 'image/jpeg'; 
-  var REGEXP_ACTIONS = /^(?:e|w|s|n|se|sw|ne|nw|all|crop|move|zoom)$/;
+  var REGEXP_ACTIONS = /^e|w|s|n|se|sw|ne|nw|all|crop|move|zoom$/;
   var REGEXP_DATA_URL = /^data:/;
   var REGEXP_DATA_URL_JPEG = /^data:image\/jpeg;base64,/;
-  var REGEXP_TAG_NAME = /^(?:img|canvas)$/i;
+  var REGEXP_TAG_NAME = /^img|canvas$/i; 
+  var MIN_CONTAINER_WIDTH = 200;
+  var MIN_CONTAINER_HEIGHT = 100;
   var DEFAULTS = {
     viewMode: 0,
     dragMode: DRAG_MODE_CROP,
@@ -139,6 +187,9 @@
   function isNumber(value) {
     return typeof value === 'number' && !isNaN(value);
   }
+  var isPositiveNumber = function isPositiveNumber(value) {
+    return value > 0 && value < Infinity;
+  };
   function isUndefined(value) {
     return typeof value === 'undefined';
   }
@@ -154,24 +205,24 @@
       var _constructor = value.constructor;
       var prototype = _constructor.prototype;
       return _constructor && prototype && hasOwnProperty.call(prototype, 'isPrototypeOf');
-    } catch (e) {
+    } catch (error) {
       return false;
     }
   }
   function isFunction(value) {
     return typeof value === 'function';
   }
+  var slice = Array.prototype.slice;
+  function toArray(value) {
+    return Array.from ? Array.from(value) : slice.call(value);
+  }
   function forEach(data, callback) {
     if (data && isFunction(callback)) {
       if (Array.isArray(data) || isNumber(data.length)
       ) {
-          var length = data.length;
-          var i;
-          for (i = 0; i < length; i += 1) {
-            if (callback.call(data, data[i], i, data) === false) {
-              break;
-            }
-          }
+          toArray(data).forEach(function (value, key) {
+            callback.call(data, value, key, data);
+          });
         } else if (isObject(data)) {
         Object.keys(data).forEach(function (key) {
           callback.call(data, data[key], key, data);
@@ -180,32 +231,32 @@
     }
     return data;
   }
-  var assign = Object.assign || function assign(obj) {
+  var assign = Object.assign || function assign(target) {
     for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
       args[_key - 1] = arguments[_key];
     }
-    if (isObject(obj) && args.length > 0) {
+    if (isObject(target) && args.length > 0) {
       args.forEach(function (arg) {
         if (isObject(arg)) {
           Object.keys(arg).forEach(function (key) {
-            obj[key] = arg[key];
+            target[key] = arg[key];
           });
         }
       });
     }
-    return obj;
+    return target;
   };
   var REGEXP_DECIMALS = /\.\d*(?:0|9){12}\d*$/;
   function normalizeDecimalNumber(value) {
     var times = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 100000000000;
     return REGEXP_DECIMALS.test(value) ? Math.round(value * times) / times : value;
   }
-  var REGEXP_SUFFIX = /^(?:width|height|left|top|marginLeft|marginTop)$/;
+  var REGEXP_SUFFIX = /^width|height|left|top|marginLeft|marginTop$/;
   function setStyle(element, styles) {
     var style = element.style;
     forEach(styles, function (value, property) {
       if (REGEXP_SUFFIX.test(property) && isNumber(value)) {
-        value += 'px';
+        value = "".concat(value, "px");
       }
       style[property] = value;
     });
@@ -268,9 +319,9 @@
       removeClass(element, value);
     }
   }
-  var REGEXP_HYPHENATE = /([a-z\d])([A-Z])/g;
-  function hyphenate(value) {
-    return value.replace(REGEXP_HYPHENATE, '$1-$2').toLowerCase();
+  var REGEXP_CAMEL_CASE = /([a-z\d])([A-Z])/g;
+  function toParamCase(value) {
+    return value.replace(REGEXP_CAMEL_CASE, '$1-$2').toLowerCase();
   }
   function getData(element, name) {
     if (isObject(element[name])) {
@@ -279,7 +330,7 @@
     if (element.dataset) {
       return element.dataset[name];
     }
-    return element.getAttribute("data-".concat(hyphenate(name)));
+    return element.getAttribute("data-".concat(toParamCase(name)));
   }
   function setData(element, name, data) {
     if (isObject(data)) {
@@ -287,30 +338,30 @@
     } else if (element.dataset) {
       element.dataset[name] = data;
     } else {
-      element.setAttribute("data-".concat(hyphenate(name)), data);
+      element.setAttribute("data-".concat(toParamCase(name)), data);
     }
   }
   function removeData(element, name) {
     if (isObject(element[name])) {
       try {
         delete element[name];
-      } catch (e) {
+      } catch (error) {
         element[name] = undefined;
       }
     } else if (element.dataset) {
       try {
         delete element.dataset[name];
-      } catch (e) {
+      } catch (error) {
         element.dataset[name] = undefined;
       }
     } else {
-      element.removeAttribute("data-".concat(hyphenate(name)));
+      element.removeAttribute("data-".concat(toParamCase(name)));
     }
   }
   var REGEXP_SPACES = /\s\s*/;
   var onceSupported = function () {
     var supported = false;
-    if (IN_BROWSER) {
+    if (IS_BROWSER) {
       var once = false;
       var listener = function listener() {};
       var options = Object.defineProperty({}, 'once', {
@@ -396,10 +447,10 @@
     };
   }
   var location = WINDOW.location;
-  var REGEXP_ORIGINS = /^(https?:)\/\/([^:/?#]+):?(\d*)/i;
+  var REGEXP_ORIGINS = /^(\w+:)\/\/([^:/?#]*):?(\d*)/i;
   function isCrossOriginURL(url) {
     var parts = url.match(REGEXP_ORIGINS);
-    return parts && (parts[1] !== location.protocol || parts[2] !== location.hostname || parts[3] !== location.port);
+    return parts !== null && (parts[1] !== location.protocol || parts[2] !== location.hostname || parts[3] !== location.port);
   }
   function addTimestamp(url) {
     var timestamp = "timestamp=".concat(new Date().getTime());
@@ -435,7 +486,7 @@
     };
   }
   function getMaxZoomRatio(pointers) {
-    var pointers2 = assign({}, pointers);
+    var pointers2 = _objectSpread2({}, pointers);
     var ratios = [];
     forEach(pointers, function (pointer, pointerId) {
       delete pointers2[pointerId];
@@ -462,7 +513,7 @@
       endX: pageX,
       endY: pageY
     };
-    return endOnly ? end : assign({
+    return endOnly ? end : _objectSpread2({
       startX: pageX,
       startY: pageY
     }, end);
@@ -485,26 +536,24 @@
       pageY: pageY
     };
   }
-  var isFinite = Number.isFinite || WINDOW.isFinite;
   function getAdjustedSizes(_ref4) 
   {
     var aspectRatio = _ref4.aspectRatio,
         height = _ref4.height,
         width = _ref4.width;
     var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'contain';
-    var isValidNumber = function isValidNumber(value) {
-      return isFinite(value) && value > 0;
-    };
-    if (isValidNumber(width) && isValidNumber(height)) {
+    var isValidWidth = isPositiveNumber(width);
+    var isValidHeight = isPositiveNumber(height);
+    if (isValidWidth && isValidHeight) {
       var adjustedWidth = height * aspectRatio;
       if (type === 'contain' && adjustedWidth > width || type === 'cover' && adjustedWidth < width) {
         height = width / aspectRatio;
       } else {
         width = height * aspectRatio;
       }
-    } else if (isValidNumber(width)) {
+    } else if (isValidWidth) {
       height = width / aspectRatio;
-    } else if (isValidNumber(height)) {
+    } else if (isValidHeight) {
       width = height * aspectRatio;
     }
     return {
@@ -609,9 +658,8 @@
   var fromCharCode = String.fromCharCode;
   function getStringFromCharCode(dataView, start, length) {
     var str = '';
-    var i;
     length += start;
-    for (i = start; i < length; i += 1) {
+    for (var i = start; i < length; i += 1) {
       str += fromCharCode(dataView.getUint8(i));
     }
     return str;
@@ -628,11 +676,11 @@
     return arrayBuffer;
   }
   function arrayBufferToDataURL(arrayBuffer, mimeType) {
-    var chunks = [];
+    var chunks = []; 
     var chunkSize = 8192;
     var uint8 = new Uint8Array(arrayBuffer);
     while (uint8.length > 0) {
-      chunks.push(fromCharCode.apply(void 0, _toConsumableArray(uint8.subarray(0, chunkSize))));
+      chunks.push(fromCharCode.apply(null, toArray(uint8.subarray(0, chunkSize))));
       uint8 = uint8.subarray(chunkSize);
     }
     return "data:".concat(mimeType, ";base64,").concat(btoa(chunks.join('')));
@@ -687,7 +735,7 @@
             }
         }
       }
-    } catch (e) {
+    } catch (error) {
       orientation = 1;
     }
     return orientation;
@@ -1064,14 +1112,17 @@
   };
   var preview = {
     initPreview: function initPreview() {
-      var crossOrigin = this.crossOrigin;
+      var element = this.element,
+          crossOrigin = this.crossOrigin;
       var preview = this.options.preview;
       var url = crossOrigin ? this.crossOriginUrl : this.url;
+      var alt = element.alt || 'The image to preview';
       var image = document.createElement('img');
       if (crossOrigin) {
         image.crossOrigin = crossOrigin;
       }
       image.src = url;
+      image.alt = alt;
       this.viewBox.appendChild(image);
       this.viewBoxImage = image;
       if (!preview) {
@@ -1079,7 +1130,7 @@
       }
       var previews = preview;
       if (typeof preview === 'string') {
-        previews = this.element.ownerDocument.querySelectorAll(preview);
+        previews = element.ownerDocument.querySelectorAll(preview);
       } else if (preview.querySelector) {
         previews = [preview];
       }
@@ -1095,6 +1146,7 @@
           img.crossOrigin = crossOrigin;
         }
         img.src = url;
+        img.alt = alt;
         img.style.cssText = 'display:block;' + 'width:100%;' + 'height:auto;' + 'min-width:0!important;' + 'min-height:0!important;' + 'max-width:none!important;' + 'max-height:none!important;' + 'image-orientation:0deg!important;"';
         el.innerHTML = '';
         el.appendChild(img);
@@ -1183,7 +1235,10 @@
       }
       addListener(cropper, EVENT_POINTER_DOWN, this.onCropStart = this.cropStart.bind(this));
       if (options.zoomable && options.zoomOnWheel) {
-        addListener(cropper, EVENT_WHEEL, this.onWheel = this.wheel.bind(this));
+        addListener(cropper, EVENT_WHEEL, this.onWheel = this.wheel.bind(this), {
+          passive: false,
+          capture: true
+        });
       }
       if (options.toggleDragModeOnDblclick) {
         addListener(cropper, EVENT_DBLCLICK, this.onDblclick = this.dblclick.bind(this));
@@ -1215,7 +1270,10 @@
       }
       removeListener(cropper, EVENT_POINTER_DOWN, this.onCropStart);
       if (options.zoomable && options.zoomOnWheel) {
-        removeListener(cropper, EVENT_WHEEL, this.onWheel);
+        removeListener(cropper, EVENT_WHEEL, this.onWheel, {
+          passive: false,
+          capture: true
+        });
       }
       if (options.toggleDragModeOnDblclick) {
         removeListener(cropper, EVENT_DBLCLICK, this.onDblclick);
@@ -1232,8 +1290,8 @@
       var options = this.options,
           container = this.container,
           containerData = this.containerData;
-      var minContainerWidth = Number(options.minContainerWidth) || 200;
-      var minContainerHeight = Number(options.minContainerHeight) || 100;
+      var minContainerWidth = Number(options.minContainerWidth) || MIN_CONTAINER_WIDTH;
+      var minContainerHeight = Number(options.minContainerHeight) || MIN_CONTAINER_HEIGHT;
       if (this.disabled || containerData.width <= minContainerWidth || containerData.height <= minContainerHeight) {
         return;
       }
@@ -1262,14 +1320,14 @@
       }
       this.setDragMode(hasClass(this.dragBox, CLASS_CROP) ? DRAG_MODE_MOVE : DRAG_MODE_CROP);
     },
-    wheel: function wheel(e) {
+    wheel: function wheel(event) {
       var _this = this;
       var ratio = Number(this.options.wheelZoomRatio) || 0.1;
       var delta = 1;
       if (this.disabled) {
         return;
       }
-      e.preventDefault(); 
+      event.preventDefault(); 
       if (this.wheeling) {
         return;
       }
@@ -1277,44 +1335,49 @@
       setTimeout(function () {
         _this.wheeling = false;
       }, 50);
-      if (e.deltaY) {
-        delta = e.deltaY > 0 ? 1 : -1;
-      } else if (e.wheelDelta) {
-        delta = -e.wheelDelta / 120;
-      } else if (e.detail) {
-        delta = e.detail > 0 ? 1 : -1;
+      if (event.deltaY) {
+        delta = event.deltaY > 0 ? 1 : -1;
+      } else if (event.wheelDelta) {
+        delta = -event.wheelDelta / 120;
+      } else if (event.detail) {
+        delta = event.detail > 0 ? 1 : -1;
       }
-      this.zoom(-delta * ratio, e);
+      this.zoom(-delta * ratio, event);
     },
-    cropStart: function cropStart(e) {
-      if (this.disabled) {
+    cropStart: function cropStart(event) {
+      var buttons = event.buttons,
+          button = event.button;
+      if (this.disabled 
+      || (event.type === 'mousedown' || event.type === 'pointerdown' && event.pointerType === 'mouse') && ( 
+      isNumber(buttons) && buttons !== 1 || isNumber(button) && button !== 0 
+      || event.ctrlKey)) {
         return;
       }
       var options = this.options,
           pointers = this.pointers;
       var action;
-      if (e.changedTouches) {
-        forEach(e.changedTouches, function (touch) {
+      if (event.changedTouches) {
+        forEach(event.changedTouches, function (touch) {
           pointers[touch.identifier] = getPointer(touch);
         });
       } else {
-        pointers[e.pointerId || 0] = getPointer(e);
+        pointers[event.pointerId || 0] = getPointer(event);
       }
       if (Object.keys(pointers).length > 1 && options.zoomable && options.zoomOnTouch) {
         action = ACTION_ZOOM;
       } else {
-        action = getData(e.target, DATA_ACTION);
+        action = getData(event.target, DATA_ACTION);
       }
       if (!REGEXP_ACTIONS.test(action)) {
         return;
       }
       if (dispatchEvent(this.element, EVENT_CROP_START, {
-        originalEvent: e,
+        originalEvent: event,
         action: action
       }) === false) {
         return;
       } 
-      e.preventDefault();
+      event.preventDefault();
       this.action = action;
       this.cropping = false;
       if (action === ACTION_CROP) {
@@ -1322,45 +1385,45 @@
         addClass(this.dragBox, CLASS_MODAL);
       }
     },
-    cropMove: function cropMove(e) {
+    cropMove: function cropMove(event) {
       var action = this.action;
       if (this.disabled || !action) {
         return;
       }
       var pointers = this.pointers;
-      e.preventDefault();
+      event.preventDefault();
       if (dispatchEvent(this.element, EVENT_CROP_MOVE, {
-        originalEvent: e,
+        originalEvent: event,
         action: action
       }) === false) {
         return;
       }
-      if (e.changedTouches) {
-        forEach(e.changedTouches, function (touch) {
+      if (event.changedTouches) {
+        forEach(event.changedTouches, function (touch) {
           assign(pointers[touch.identifier] || {}, getPointer(touch, true));
         });
       } else {
-        assign(pointers[e.pointerId || 0] || {}, getPointer(e, true));
+        assign(pointers[event.pointerId || 0] || {}, getPointer(event, true));
       }
-      this.change(e);
+      this.change(event);
     },
-    cropEnd: function cropEnd(e) {
+    cropEnd: function cropEnd(event) {
       if (this.disabled) {
         return;
       }
       var action = this.action,
           pointers = this.pointers;
-      if (e.changedTouches) {
-        forEach(e.changedTouches, function (touch) {
+      if (event.changedTouches) {
+        forEach(event.changedTouches, function (touch) {
           delete pointers[touch.identifier];
         });
       } else {
-        delete pointers[e.pointerId || 0];
+        delete pointers[event.pointerId || 0];
       }
       if (!action) {
         return;
       }
-      e.preventDefault();
+      event.preventDefault();
       if (!Object.keys(pointers).length) {
         this.action = '';
       }
@@ -1369,13 +1432,13 @@
         toggleClass(this.dragBox, CLASS_MODAL, this.cropped && this.options.modal);
       }
       dispatchEvent(this.element, EVENT_CROP_END, {
-        originalEvent: e,
+        originalEvent: event,
         action: action
       });
     }
   };
   var change = {
-    change: function change(e) {
+    change: function change(event) {
       var options = this.options,
           canvasData = this.canvasData,
           containerData = this.containerData,
@@ -1395,7 +1458,7 @@
       var maxHeight = containerData.height;
       var renderable = true;
       var offset; 
-      if (!aspectRatio && e.shiftKey) {
+      if (!aspectRatio && event.shiftKey) {
         aspectRatio = width && height ? width / height : 1;
       }
       if (this.limited) {
@@ -1706,7 +1769,7 @@
           renderable = false;
           break;
         case ACTION_ZOOM:
-          this.zoom(getMaxZoomRatio(pointers), e);
+          this.zoom(getMaxZoomRatio(pointers), event);
           renderable = false;
           break;
         case ACTION_CROP:
@@ -1964,7 +2027,7 @@
       }
       return this;
     },
-    getData: function getData$$1() {
+    getData: function getData() {
       var rounded = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
       var options = this.options,
           imageData = this.imageData,
@@ -2007,7 +2070,7 @@
       }
       return data;
     },
-    setData: function setData$$1(data) {
+    setData: function setData(data) {
       var options = this.options,
           imageData = this.imageData,
           canvasData = this.canvasData;
@@ -2339,14 +2402,14 @@
             this.clone();
           }
           return;
-        }
+        } 
         var xhr = new XMLHttpRequest();
         var clone = this.clone.bind(this);
         this.reloading = true;
-        this.xhr = xhr;
-        xhr.ontimeout = clone;
+        this.xhr = xhr; 
         xhr.onabort = clone;
         xhr.onerror = clone;
+        xhr.ontimeout = clone;
         xhr.onprogress = function () {
           if (xhr.getResponseHeader('content-type') !== MIME_TYPE_JPEG) {
             xhr.abort();
@@ -2371,7 +2434,7 @@
       key: "read",
       value: function read(arrayBuffer) {
         var options = this.options,
-            imageData = this.imageData;
+            imageData = this.imageData; 
         var orientation = resetAndGetOrientation(arrayBuffer);
         var rotate = 0;
         var scaleX = 1;
@@ -2397,16 +2460,13 @@
       value: function clone() {
         var element = this.element,
             url = this.url;
-        var crossOrigin;
-        var crossOriginUrl;
+        var crossOrigin = element.crossOrigin;
+        var crossOriginUrl = url;
         if (this.options.checkCrossOrigin && isCrossOriginURL(url)) {
-          crossOrigin = element.crossOrigin;
-          if (crossOrigin) {
-            crossOriginUrl = url;
-          } else {
-            crossOrigin = 'anonymous'; 
-            crossOriginUrl = addTimestamp(url);
-          }
+          if (!crossOrigin) {
+            crossOrigin = 'anonymous';
+          } 
+          crossOriginUrl = addTimestamp(url);
         }
         this.crossOrigin = crossOrigin;
         this.crossOriginUrl = crossOriginUrl;
@@ -2415,6 +2475,7 @@
           image.crossOrigin = crossOrigin;
         }
         image.src = crossOriginUrl || url;
+        image.alt = element.alt || 'The image to crop';
         this.image = image;
         image.onload = this.start.bind(this);
         image.onerror = this.stop.bind(this);
@@ -2425,11 +2486,11 @@
       key: "start",
       value: function start() {
         var _this2 = this;
-        var image = this.isImg ? this.element : this.image;
+        var image = this.image;
         image.onload = null;
         image.onerror = null;
-        this.sizing = true;
-        var IS_SAFARI = WINDOW.navigator && /(Macintosh|iPhone|iPod|iPad).*AppleWebKit/i.test(WINDOW.navigator.userAgent);
+        this.sizing = true; 
+        var isIOSWebKit = WINDOW.navigator && /(?:iPad|iPhone|iPod).*?AppleWebKit/i.test(WINDOW.navigator.userAgent);
         var done = function done(naturalWidth, naturalHeight) {
           assign(_this2.imageData, {
             naturalWidth: naturalWidth,
@@ -2440,7 +2501,7 @@
           _this2.sized = true;
           _this2.build();
         }; 
-        if (image.naturalWidth && !IS_SAFARI) {
+        if (image.naturalWidth && !isIOSWebKit) {
           done(image.naturalWidth, image.naturalHeight);
           return;
         }
@@ -2449,12 +2510,12 @@
         this.sizingImage = sizingImage;
         sizingImage.onload = function () {
           done(sizingImage.width, sizingImage.height);
-          if (!IS_SAFARI) {
+          if (!isIOSWebKit) {
             body.removeChild(sizingImage);
           }
         };
         sizingImage.src = image.src; 
-        if (!IS_SAFARI) {
+        if (!isIOSWebKit) {
           sizingImage.style.cssText = 'left:0;' + 'max-height:none!important;' + 'max-width:none!important;' + 'min-height:0!important;' + 'min-width:0!important;' + 'opacity:0;' + 'position:absolute;' + 'top:0;' + 'z-index:-1;';
           body.appendChild(sizingImage);
         }
@@ -2584,4 +2645,4 @@
   }();
   assign(Cropper.prototype, render, preview, events, handlers, change, methods);
   return Cropper;
-})));
+}));
