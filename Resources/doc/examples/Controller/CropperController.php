@@ -1,5 +1,6 @@
 <?php
 namespace App\Controller;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,7 +33,7 @@ class CropperController extends AbstractController
                         $status = 200;
                         $message = $nameEntity.' saved.';
                         $return = true;
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         $message = 'An error occurred when updating the '.mb_strtolower($nameEntity).'...';
                     }
                 } else {
@@ -72,7 +73,7 @@ class CropperController extends AbstractController
                     $message = 'Image deleted!';
                     $status = 200;
                     $return = true;
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $message = 'An error occurred when delete the '.mb_strtolower($nameEntity).'...';
                 }
             }

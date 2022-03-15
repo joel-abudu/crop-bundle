@@ -1,5 +1,6 @@
 <?php
 namespace App\Controller;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,7 +21,7 @@ class UserController extends AbstractController
             }
             $em->persist($entity);
             $em->flush();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
         }
     }
 }
