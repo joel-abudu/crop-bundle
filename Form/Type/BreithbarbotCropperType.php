@@ -5,7 +5,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-class CropperType extends AbstractType
+class BreithbarbotCropperType extends AbstractType
 {
     private Container $container;
     public function __construct(Container $container)

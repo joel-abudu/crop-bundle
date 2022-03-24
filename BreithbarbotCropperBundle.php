@@ -1,6 +1,6 @@
 <?php
 namespace Breithbarbot\CropperBundle;
-use Breithbarbot\CropperBundle\DependencyInjection\Compiler\FormPass;
+use Breithbarbot\CropperBundle\DependencyInjection\CompilerPass\FormPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 class BreithbarbotCropperBundle extends Bundle

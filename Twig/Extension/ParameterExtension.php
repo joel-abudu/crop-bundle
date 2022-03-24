@@ -16,12 +16,12 @@ class ParameterExtension extends AbstractExtension
             new TwigFunction('breithbarbot_cropper_parameter', [$this, 'getParameter']),
         ];
     }
-    public function getParameter(string $name): string
+    public function getParameter(string $name): array
     {
         if (!empty($name)) {
             return $this->container->getParameter($name);
         }
-        return '';
+        return [];
     }
     public function getName(): string
     {

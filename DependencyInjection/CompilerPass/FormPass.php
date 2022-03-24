@@ -1,8 +1,7 @@
 <?php
-namespace Breithbarbot\CropperBundle\DependencyInjection\Compiler;
+namespace Breithbarbot\CropperBundle\DependencyInjection\CompilerPass;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 class FormPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void

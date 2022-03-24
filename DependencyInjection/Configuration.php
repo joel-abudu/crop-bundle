@@ -1,6 +1,5 @@
 <?php
 namespace Breithbarbot\CropperBundle\DependencyInjection;
-use RuntimeException;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 class Configuration implements ConfigurationInterface
@@ -14,8 +13,7 @@ class Configuration implements ConfigurationInterface
                     ->useAttributeAsKey('id')
                         ->prototype('array')
                             ->children()
-                                ->arrayNode('routes')
-                                    ->isRequired()
+                                ->arrayNode('routes')->isRequired()
                                     ->children()
                                         ->scalarNode('path_add')->isRequired()->cannotBeEmpty()->end()
                                         ->scalarNode('path_delete')->end()

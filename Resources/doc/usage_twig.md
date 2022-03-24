@@ -1,4 +1,5 @@
-# Usage in Twig Instructions
+Usage in Twig instructions
+==========================
 <br>
 ### Use `asset` function
 ```twig
@@ -7,5 +8,5 @@
 <img class="img-responsive" src="{{ asset(entity.field.path) }}" alt="{{ entity.field.title }}">
 ```
 <br>
-#### Back to index
-[Back to documentation index](index.md)
+## Next ?
+- [Homepage documentation](index.md)
