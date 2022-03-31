@@ -47,5 +47,6 @@ Include modal with params:
     - identifier : `'crop3'`
 <br>
 ## Next ?
+- [Usage Instructions (Step 5)](usage.md#step-5-add-form-field)
 - [Usage in Twig instructions](usage_twig.md)
 - [Homepage documentation](index.md)
