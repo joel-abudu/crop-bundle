@@ -45,8 +45,11 @@ framework:
 Example in a form builder:
 ```php
 <?php
+// src\Form\UserType.php
 // [...]
 use Breithbarbot\CropperBundle\Form\Type\BreithbarbotCropperType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
 class UserType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -68,6 +71,7 @@ class UserType extends AbstractType
             // [...]
         ;
     }
+    // [...]
 }
 ```
 > For multiple cropping on the same page : [Multiple Usage Instructions](usage_multiple.md)
