@@ -1,0 +1,15 @@
+breithbarbot_cropper:
+    mappings:
+        user_avatar:
+            routes:
+                path_add: 'app_cropper_avatar_add'
+                path_delete: 'app_cropper_avatar_delete'
+            width:  400
+            height: 400
+            ratio:  1
+        note_image:
+            routes:
+                path_add: 'app_cropper_note_add'
+            width:  400
+            height: 225
+            ratio:  '16/9'
