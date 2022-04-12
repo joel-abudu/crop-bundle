@@ -36,9 +36,6 @@ Here you will find information on installation procedure and usage instructions.
 │   ├───Form
 │   │       UserType.php
 │   │
-│   ├───Migrations
-│   │       Version20200209213559.php
-│   │
 │   └───Repository
 │           FileRepository.php
 │           UserRepository.php
@@ -52,8 +49,5 @@ Here you will find information on installation procedure and usage instructions.
 If you want use example files, follow instructions:
 1. Execute: `composer require sensio/framework-extra-bundle`
 1. Execute: `composer require symfony/security-core`
-1. Execute: `composer require symfony/orm-pack` and config `.env`
 1. Copy all files in your project
-1. Execute: `php bin/console doctrine:database:create`
-1. Execute: `php bin/console doctrine:migrations:migrate`
 1. Run your server and go to: `/example`
